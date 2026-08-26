@@ -1,0 +1,321 @@
+<div class="module-page">
+
+    <div class="page-header">
+  
+      <div>
+        <div class="breadcrumbs">
+          <span>Dashboard</span>
+          <span>/</span>
+          <strong>Publishing</strong>
+        </div>
+  
+        <h1>Publishing</h1>
+  
+        <p>
+          Manage post templates and publishing content.
+        </p>
+      </div>
+  
+      <button
+        type="button"
+        class="primary-button"
+        (click)="openCreate()"
+      >
+        <span>+</span>
+        Create Template
+      </button>
+  
+    </div>
+  
+  
+    @if (error()) {
+      <div class="error-banner">
+        {{ error() }}
+      </div>
+    }
+  
+  
+    <section class="table-card">
+  
+      <div class="table-toolbar">
+  
+        <div>
+          <h2>Templates</h2>
+          <span>{{ total() }} templates</span>
+        </div>
+  
+        <div class="toolbar-actions">
+  
+          <div class="search-box">
+            <span>⌕</span>
+  
+            <input
+              type="text"
+              placeholder="Search templates..."
+              [value]="search()"
+              (input)="onSearch($any($event.target).value)"
+            />
+          </div>
+  
+        </div>
+  
+      </div>
+  
+  
+      @if (loading() && templates().length === 0) {
+  
+        <div class="loading">
+          Loading templates...
+        </div>
+  
+      } @else if (filteredTemplates().length === 0) {
+  
+        <div class="empty-state">
+  
+          <div class="empty-icon">
+            ◉
+          </div>
+  
+          <h3>
+            No templates found
+          </h3>
+  
+          <p>
+            Create your first publishing template.
+          </p>
+  
+          <button
+            type="button"
+            class="primary-button"
+            (click)="openCreate()"
+          >
+            + Create Template
+          </button>
+  
+        </div>
+  
+      } @else {
+  
+        <div class="table-wrapper">
+  
+          <table>
+  
+            <thead>
+              <tr>
+                <th>NAME</th>
+                <th>CONTENT</th>
+                <th>VARIABLES</th>
+                <th>VERSION</th>
+                <th>UPDATED</th>
+                <th>ACTIONS</th>
+              </tr>
+            </thead>
+  
+            <tbody>
+  
+              @for (
+                template of filteredTemplates();
+                track trackById($index, template)
+              ) {
+  
+                <tr>
+  
+                  <td>
+                    <strong>
+                      {{ getTemplateName(template) }}
+                    </strong>
+                  </td>
+  
+                  <td>
+                    <div class="content-preview">
+                      {{ template.content || '—' }}
+                    </div>
+                  </td>
+  
+                  <td>
+                    <span class="variables">
+                      {{ getVariables(template) }}
+                    </span>
+                  </td>
+  
+                  <td>
+                    <span class="version">
+                      v{{ template.version || 1 }}
+                    </span>
+                  </td>
+  
+                  <td>
+                    {{
+                      template.updatedAt
+                        ? (template.updatedAt | date:'dd MMM yyyy, HH:mm')
+                        : '—'
+                    }}
+                  </td>
+  
+                  <td>
+  
+                    <div class="row-actions">
+  
+                      <button
+                        type="button"
+                        class="action-button"
+                        (click)="openEdit(template)"
+                      >
+                        Edit
+                      </button>
+  
+                      <button
+                        type="button"
+                        class="action-button danger"
+                        (click)="deleteTemplate(template)"
+                      >
+                        Delete
+                      </button>
+  
+                    </div>
+  
+                  </td>
+  
+                </tr>
+  
+              }
+  
+            </tbody>
+  
+          </table>
+  
+        </div>
+  
+  
+        <div class="pagination">
+  
+          <span>
+            Page {{ page() }} of {{ totalPages() }}
+          </span>
+  
+          <div>
+  
+            <button
+              type="button"
+              [disabled]="page() <= 1 || loading()"
+              (click)="previousPage()"
+            >
+              Previous
+            </button>
+  
+            <button
+              type="button"
+              [disabled]="page() >= totalPages() || loading()"
+              (click)="nextPage()"
+            >
+              Next
+            </button>
+  
+          </div>
+  
+        </div>
+  
+      }
+  
+    </section>
+  
+  
+    @if (showForm()) {
+  
+      <div
+        class="modal-backdrop"
+        (click)="closeForm()"
+      >
+  
+        <div
+          class="modal"
+          (click)="$event.stopPropagation()"
+        >
+  
+          <div class="modal-header">
+  
+            <div>
+              <h2>
+                {{ editingId() ? 'Edit Template' : 'Create Template' }}
+              </h2>
+  
+              <p>
+                Use {{'{{variable}}'}} tokens for dynamic content.
+              </p>
+            </div>
+  
+            <button
+              type="button"
+              class="close-button"
+              (click)="closeForm()"
+            >
+              ×
+            </button>
+  
+          </div>
+  
+  
+          <div class="form">
+  
+            <label>
+              Template Name
+  
+              <input
+                type="text"
+                [(ngModel)]="formName"
+                placeholder="Match Result Post"
+              />
+            </label>
+  
+  
+            <label>
+              Template Content
+  
+              <textarea
+                rows="8"
+                [(ngModel)]="formContent"
+                placeholder="Congratulations {{'{{homeTeam}}'}}! Final score {{'{{homeScore}}'}} - {{'{{awayScore}}'}}"
+              ></textarea>
+            </label>
+  
+  
+            <div class="form-hint">
+              Example variables:
+              {{'{{homeTeam}}'}},
+              {{'{{awayTeam}}'}},
+              {{'{{homeScore}}'}},
+              {{'{{awayScore}}'}}
+            </div>
+  
+  
+            <div class="modal-actions">
+  
+              <button
+                type="button"
+                class="secondary-button"
+                (click)="closeForm()"
+              >
+                Cancel
+              </button>
+  
+              <button
+                type="button"
+                class="primary-button"
+                [disabled]="loading()"
+                (click)="saveTemplate()"
+              >
+                {{ editingId() ? 'Update Template' : 'Create Template' }}
+              </button>
+  
+            </div>
+  
+          </div>
+  
+        </div>
+  
+      </div>
+  
+    }
+  
+  </div>
+  

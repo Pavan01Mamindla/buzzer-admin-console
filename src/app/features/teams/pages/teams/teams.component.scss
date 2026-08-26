@@ -1,0 +1,302 @@
+:host {
+    display: block;
+  }
+  
+  .module-page {
+    padding: 32px;
+    color: #fff;
+  }
+  
+  .page-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 28px;
+  
+    h1 {
+      margin: 0;
+      font-size: 30px;
+      font-weight: 700;
+    }
+  
+    p {
+      margin: 8px 0 0;
+      color: #858585;
+    }
+  }
+  
+  .breadcrumbs {
+    display: flex;
+    gap: 8px;
+    color: #777;
+    font-size: 13px;
+    margin-bottom: 12px;
+  
+    strong {
+      color: #bbb;
+    }
+  }
+  
+  .primary-button {
+    border: 0;
+    border-radius: 8px;
+    padding: 11px 16px;
+    background: #ffb414;
+    color: #111;
+    font-weight: 700;
+    cursor: pointer;
+  
+    &:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+  }
+  
+  .error-banner {
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    background: rgba(220, 60, 60, .15);
+    border: 1px solid rgba(220, 60, 60, .35);
+    color: #ff8d8d;
+  }
+  
+  .table-card {
+    background: #212121;
+    border: 1px solid #2c2c2c;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  .table-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px 24px;
+    border-bottom: 1px solid #303030;
+  
+    h2 {
+      margin: 0 0 5px;
+      font-size: 18px;
+    }
+  
+    span {
+      color: #777;
+      font-size: 13px;
+    }
+  }
+  
+  .toolbar-actions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 260px;
+    padding: 9px 12px;
+    background: #181818;
+    border: 1px solid #333;
+    border-radius: 7px;
+  
+    span {
+      font-size: 18px;
+    }
+  
+    input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: #fff;
+    }
+  }
+  
+  .table-wrapper {
+    overflow-x: auto;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  
+    th,
+    td {
+      padding: 15px 20px;
+      text-align: left;
+      border-bottom: 1px solid #2d2d2d;
+    }
+  
+    th {
+      color: #777;
+      font-size: 11px;
+      letter-spacing: .05em;
+    }
+  
+    td {
+      color: #bbb;
+      font-size: 14px;
+    }
+  }
+  
+  .team {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #fff;
+  }
+  
+  .team img,
+  .team-placeholder {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+  }
+  
+  .team img {
+    object-fit: cover;
+  }
+  
+  .team-placeholder {
+    display: grid;
+    place-items: center;
+    background: #303030;
+  }
+  
+  .actions {
+    display: flex;
+    gap: 8px;
+  
+    button {
+      border: 1px solid #3a3a3a;
+      border-radius: 6px;
+      padding: 6px 10px;
+      background: #292929;
+      color: #ddd;
+      cursor: pointer;
+    }
+  
+    .danger {
+      color: #ff7777;
+    }
+  }
+  
+  .loading,
+  .empty-state {
+    padding: 60px;
+    text-align: center;
+    color: #777;
+  }
+  
+  .empty-icon {
+    font-size: 30px;
+    margin-bottom: 12px;
+  }
+  
+  .empty-state h3 {
+    color: #ddd;
+  }
+  
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    color: #777;
+  
+    button {
+      margin-left: 8px;
+      padding: 7px 12px;
+      border: 1px solid #383838;
+      border-radius: 6px;
+      background: #292929;
+      color: #ddd;
+      cursor: pointer;
+  
+      &:disabled {
+        opacity: .4;
+        cursor: not-allowed;
+      }
+    }
+  }
+  
+  .dialog-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, .7);
+  }
+  
+  .dialog {
+    width: min(520px, 100%);
+    background: #222;
+    border: 1px solid #383838;
+    border-radius: 10px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, .5);
+  }
+  
+  .dialog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    border-bottom: 1px solid #333;
+  
+    h2 {
+      margin: 0;
+    }
+  
+    button {
+      border: 0;
+      background: transparent;
+      color: #aaa;
+      font-size: 24px;
+      cursor: pointer;
+    }
+  }
+  
+  .form {
+    display: grid;
+    gap: 16px;
+    padding: 20px;
+  
+    label {
+      display: grid;
+      gap: 7px;
+      color: #aaa;
+      font-size: 13px;
+    }
+  
+    input {
+      padding: 10px 12px;
+      border: 1px solid #3a3a3a;
+      border-radius: 6px;
+      outline: 0;
+      background: #181818;
+      color: #fff;
+    }
+  }
+  
+  .dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 16px 20px;
+    border-top: 1px solid #333;
+  
+    > button:first-child {
+      padding: 10px 15px;
+      border: 1px solid #3a3a3a;
+      border-radius: 7px;
+      background: #292929;
+      color: #ddd;
+    }
+  }
+  

@@ -1,0 +1,447 @@
+<div class="sports-page">
+
+  <!-- ===================================================== -->
+  <!-- PAGE HEADER -->
+  <!-- ===================================================== -->
+
+  <div class="page-header">
+
+    <div>
+
+      <div class="breadcrumbs">
+        <span>Dashboard</span>
+        <span>/</span>
+        <strong>Sports</strong>
+      </div>
+
+      <h1>Sports</h1>
+
+      <p>
+        Manage sports and their governing bodies.
+      </p>
+
+    </div>
+
+    <button
+      class="primary-button"
+      type="button"
+      (click)="openCreateDialog()"
+    >
+      <span>+</span>
+      Add Sport
+    </button>
+
+  </div>
+
+
+  <!-- ===================================================== -->
+  <!-- SPORTS ERROR -->
+  <!-- ===================================================== -->
+
+  @if (error()) {
+
+    <div class="error-banner">
+      {{ error() }}
+    </div>
+
+  }
+
+
+  <!-- ===================================================== -->
+  <!-- STATISTICS -->
+  <!-- ===================================================== -->
+
+  <div class="stats-grid">
+
+    <!-- SPORTS -->
+
+    <div class="stat-card">
+
+      <div class="stat-icon">
+        ⚽
+      </div>
+
+      <div>
+
+        <span class="stat-label">
+          Sports
+        </span>
+
+        <strong>
+          {{ loading() ? '—' : total() }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <!-- GOVERNING BODIES -->
+
+    <div class="stat-card">
+
+      <div class="stat-icon">
+        ◈
+      </div>
+
+      <div>
+
+        <span class="stat-label">
+          Governing Bodies
+        </span>
+
+        <strong>
+          {{ statsLoading() ? '—' : governingBodiesTotal() }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <!-- ORGANISATIONS -->
+
+    <div class="stat-card">
+
+      <div class="stat-icon">
+        ◎
+      </div>
+
+      <div>
+
+        <span class="stat-label">
+          Organisations
+        </span>
+
+        <strong>
+          {{ statsLoading() ? '—' : organizationsTotal() }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <!-- PARTICIPANTS -->
+
+    <div class="stat-card">
+
+      <div class="stat-icon">
+        ◉
+      </div>
+
+      <div>
+
+        <span class="stat-label">
+          Participants
+        </span>
+
+        <strong>
+          {{ statsLoading() ? '—' : participantsTotal() }}
+        </strong>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ===================================================== -->
+  <!-- STATISTICS ERROR -->
+  <!-- ===================================================== -->
+
+  @if (statsError()) {
+
+    <div class="error-banner stats-error">
+      {{ statsError() }}
+    </div>
+
+  }
+
+
+  <!-- ===================================================== -->
+  <!-- SPORTS CATALOGUE -->
+  <!-- ===================================================== -->
+
+  <section class="table-card">
+
+    <!-- TOOLBAR -->
+
+    <div class="table-toolbar">
+
+      <div>
+
+        <h2>
+          Sports Catalogue
+        </h2>
+
+        <span>
+          {{ total() }} sports
+        </span>
+
+      </div>
+
+
+      <!-- SEARCH -->
+
+      <div class="search-box">
+
+        <span>
+          ⌕
+        </span>
+
+        <input
+          type="text"
+          placeholder="Search sports..."
+          [value]="search()"
+          (input)="onSearch($any($event.target).value)"
+        />
+
+      </div>
+
+    </div>
+
+
+    <!-- =================================================== -->
+    <!-- LOADING -->
+    <!-- =================================================== -->
+
+    @if (loading()) {
+
+      <div class="loading">
+
+        <div class="loading-spinner"></div>
+
+        <span>
+          Loading sports...
+        </span>
+
+      </div>
+
+    }
+
+
+    <!-- =================================================== -->
+    <!-- EMPTY -->
+    <!-- =================================================== -->
+
+    @else if (sports().length === 0) {
+
+      <div class="empty-state">
+
+        <div class="empty-icon">
+          ⚽
+        </div>
+
+        <h3>
+          No sports found
+        </h3>
+
+        <p>
+          @if (search()) {
+            No sports match "{{ search() }}".
+          } @else {
+            Add your first sport to the catalogue.
+          }
+        </p>
+
+        @if (!search()) {
+
+          <button
+            class="primary-button"
+            type="button"
+            (click)="openCreateDialog()"
+          >
+            Add Sport
+          </button>
+
+        }
+
+      </div>
+
+    }
+
+
+    <!-- =================================================== -->
+    <!-- TABLE -->
+    <!-- =================================================== -->
+
+    @else {
+
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>
+                SPORT
+              </th>
+
+              <th>
+                DESCRIPTION
+              </th>
+
+              <th>
+                ICON
+              </th>
+
+              <th class="actions-column">
+                ACTIONS
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            @for (
+              sport of sports();
+              track sport.id
+            ) {
+
+              <tr>
+
+                <!-- SPORT -->
+
+                <td>
+
+                  <div class="sport-name">
+
+                    @if (sport.iconUrl) {
+
+                      <img
+                        [src]="sport.iconUrl"
+                        [alt]="sport.name"
+                        loading="lazy"
+                      />
+
+                    } @else {
+
+                      <div class="sport-placeholder">
+                        ⚽
+                      </div>
+
+                    }
+
+                    <strong>
+                      {{ sport.name }}
+                    </strong>
+
+                  </div>
+
+                </td>
+
+
+                <!-- DESCRIPTION -->
+
+                <td>
+
+                  <span class="description">
+                    {{ sport.description || '—' }}
+                  </span>
+
+                </td>
+
+
+                <!-- ICON -->
+
+                <td>
+
+                  @if (sport.iconUrl) {
+
+                    <a
+                      [href]="sport.iconUrl"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      View
+                    </a>
+
+                  } @else {
+
+                    <span class="muted">
+                      —
+                    </span>
+
+                  }
+
+                </td>
+
+
+                <!-- ACTIONS -->
+
+                <td class="actions">
+
+                  <button
+                    type="button"
+                    class="action-button edit"
+                    (click)="openEditDialog(sport)"
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    type="button"
+                    class="action-button delete"
+                    (click)="deleteSport(sport)"
+                  >
+                    Delete
+                  </button>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+
+      <!-- ================================================= -->
+      <!-- PAGINATION -->
+      <!-- ================================================= -->
+
+      <div class="pagination">
+
+        <span>
+          Page {{ page() }} of {{ totalPages() }}
+        </span>
+
+
+        <div>
+
+          <button
+            type="button"
+            [disabled]="page() <= 1 || loading()"
+            (click)="previousPage()"
+          >
+            Previous
+          </button>
+
+          <button
+            type="button"
+            [disabled]="page() >= totalPages() || loading()"
+            (click)="nextPage()"
+          >
+            Next
+          </button>
+
+        </div>
+
+      </div>
+
+    }
+
+  </section>
+
+</div>

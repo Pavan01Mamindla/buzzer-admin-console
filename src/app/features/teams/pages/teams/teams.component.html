@@ -1,0 +1,357 @@
+<div class="module-page">
+
+    <div class="page-header">
+  
+      <div>
+  
+        <div class="breadcrumbs">
+          <span>Dashboard</span>
+          <span>/</span>
+          <strong>Teams</strong>
+        </div>
+  
+        <h1>Teams</h1>
+  
+        <p>
+          Manage sports teams and their information.
+        </p>
+  
+      </div>
+  
+      <button
+        class="primary-button"
+        type="button"
+        (click)="openCreateDialog()"
+      >
+        <span>+</span>
+        Add Team
+      </button>
+  
+    </div>
+  
+  
+    @if (error()) {
+  
+      <div class="error-banner">
+        {{ error() }}
+      </div>
+  
+    }
+  
+  
+    <section class="table-card">
+  
+      <div class="table-toolbar">
+  
+        <div>
+          <h2>Teams</h2>
+          <span>{{ total() }} teams</span>
+        </div>
+  
+        <div class="toolbar-actions">
+  
+          <div class="search-box">
+  
+            <span>⌕</span>
+  
+            <input
+              type="text"
+              placeholder="Search teams..."
+              [value]="search()"
+              (input)="onSearch($any($event.target).value)"
+            />
+  
+          </div>
+  
+        </div>
+  
+      </div>
+  
+  
+      @if (loading()) {
+  
+        <div class="loading">
+          Loading teams...
+        </div>
+  
+      } @else if (teams().length === 0) {
+  
+        <div class="empty-state">
+  
+          <div class="empty-icon">
+            ⚽
+          </div>
+  
+          <h3>No teams found</h3>
+  
+          <p>
+            There are no teams matching your search.
+          </p>
+  
+        </div>
+  
+      } @else {
+  
+        <div class="table-wrapper">
+  
+          <table>
+  
+            <thead>
+  
+              <tr>
+                <th>TEAM</th>
+                <th>SHORT NAME</th>
+                <th>ORGANIZATION</th>
+                <th>SPORT</th>
+                <th>ACTIONS</th>
+              </tr>
+  
+            </thead>
+  
+            <tbody>
+  
+              @for (team of teams(); track team.id) {
+  
+                <tr>
+  
+                  <td>
+  
+                    <div class="team">
+  
+                      @if (team.logoUrl) {
+  
+                        <img
+                          [src]="team.logoUrl"
+                          [alt]="team.name"
+                        />
+  
+                      } @else {
+  
+                        <div class="team-placeholder">
+                          ⚽
+                        </div>
+  
+                      }
+  
+                      <strong>
+                        {{ team.name }}
+                      </strong>
+  
+                    </div>
+  
+                  </td>
+  
+                  <td>
+                    {{ team.shortName || '—' }}
+                  </td>
+  
+                  <td>
+                    {{ team.organizationId || '—' }}
+                  </td>
+  
+                  <td>
+                    {{ team.sportId || '—' }}
+                  </td>
+  
+                  <td>
+  
+                    <div class="actions">
+  
+                      <button
+                        type="button"
+                        (click)="openEditDialog(team)"
+                      >
+                        Edit
+                      </button>
+  
+                      <button
+                        type="button"
+                        class="danger"
+                        (click)="deleteTeam(team)"
+                      >
+                        Delete
+                      </button>
+  
+                    </div>
+  
+                  </td>
+  
+                </tr>
+  
+              }
+  
+            </tbody>
+  
+          </table>
+  
+        </div>
+  
+  
+        <div class="pagination">
+  
+          <span>
+            Page {{ page() }} of {{ totalPages() }}
+          </span>
+  
+          <div>
+  
+            <button
+              type="button"
+              [disabled]="page() <= 1 || loading()"
+              (click)="previousPage()"
+            >
+              Previous
+            </button>
+  
+            <button
+              type="button"
+              [disabled]="page() >= totalPages() || loading()"
+              (click)="nextPage()"
+            >
+              Next
+            </button>
+  
+          </div>
+  
+        </div>
+  
+      }
+  
+    </section>
+  
+  
+    @if (showDialog()) {
+  
+      <div
+        class="dialog-backdrop"
+        (click)="closeDialog()"
+      >
+  
+        <div
+          class="dialog"
+          (click)="$event.stopPropagation()"
+        >
+  
+          <div class="dialog-header">
+  
+            <h2>
+              {{ editingTeam() ? 'Edit Team' : 'Add Team' }}
+            </h2>
+  
+            <button
+              type="button"
+              (click)="closeDialog()"
+            >
+              ×
+            </button>
+  
+          </div>
+  
+  
+          <div class="form">
+  
+            <label>
+              Team Name
+  
+              <input
+                type="text"
+                [value]="form().name"
+                (input)="updateField(
+                  'name',
+                  $any($event.target).value
+                )"
+              />
+  
+            </label>
+  
+  
+            <label>
+              Short Name
+  
+              <input
+                type="text"
+                [value]="form().shortName || ''"
+                (input)="updateField(
+                  'shortName',
+                  $any($event.target).value
+                )"
+              />
+  
+            </label>
+  
+  
+            <label>
+              Logo URL
+  
+              <input
+                type="text"
+                [value]="form().logoUrl || ''"
+                (input)="updateField(
+                  'logoUrl',
+                  $any($event.target).value
+                )"
+              />
+  
+            </label>
+  
+  
+            <label>
+              Organization ID
+  
+              <input
+                type="text"
+                [value]="form().organizationId || ''"
+                (input)="updateField(
+                  'organizationId',
+                  $any($event.target).value
+                )"
+              />
+  
+            </label>
+  
+  
+            <label>
+              Sport ID
+  
+              <input
+                type="text"
+                [value]="form().sportId || ''"
+                (input)="updateField(
+                  'sportId',
+                  $any($event.target).value
+                )"
+              />
+  
+            </label>
+  
+          </div>
+  
+  
+          <div class="dialog-actions">
+  
+            <button
+              type="button"
+              (click)="closeDialog()"
+            >
+              Cancel
+            </button>
+  
+            <button
+              class="primary-button"
+              type="button"
+              [disabled]="loading()"
+              (click)="saveTeam()"
+            >
+              {{ editingTeam() ? 'Update Team' : 'Create Team' }}
+            </button>
+  
+          </div>
+  
+        </div>
+  
+      </div>
+  
+    }
+  
+  </div>
+  

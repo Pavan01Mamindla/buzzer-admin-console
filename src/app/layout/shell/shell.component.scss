@@ -1,0 +1,34 @@
+:host {
+  display: block;
+  height: 100vh;
+  background: #131515;
+}
+
+.shell {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: #131515;
+}
+
+.main {
+  min-width: 0;
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+}
+
+.content {
+  flex: 1;
+
+  overflow: auto;
+
+  padding: 28px;
+
+  background: #131515;
+  color: #fff;
+}

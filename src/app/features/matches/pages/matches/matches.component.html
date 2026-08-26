@@ -1,0 +1,394 @@
+<div class="module-page">
+
+    <!-- ===================================================== -->
+    <!-- PAGE HEADER -->
+    <!-- ===================================================== -->
+  
+    <div class="page-header">
+  
+      <div>
+  
+        <div class="breadcrumbs">
+          <span>Dashboard</span>
+          <span>/</span>
+          <strong>Match Management</strong>
+        </div>
+  
+        <h1>Match Management</h1>
+  
+        <p>
+          Schedule matches, manage live games and monitor match events.
+        </p>
+  
+      </div>
+  
+      <button
+  class="primary-button"
+  type="button"
+>
+  <span>+</span>
+  Schedule Match
+</button>
+
+  
+    </div>
+  
+  
+    <!-- ===================================================== -->
+    <!-- ERROR -->
+    <!-- ===================================================== -->
+  
+    @if (error()) {
+  
+      <div class="error-banner">
+        {{ error() }}
+      </div>
+  
+    }
+  
+  
+    <!-- ===================================================== -->
+    <!-- MATCHES TABLE -->
+    <!-- ===================================================== -->
+  
+    <section class="table-card">
+  
+      <!-- TOOLBAR -->
+  
+      <div class="table-toolbar">
+  
+        <div>
+  
+          <h2>Matches</h2>
+  
+          <span>
+            {{ total() }} matches
+          </span>
+  
+        </div>
+  
+  
+        <div class="toolbar-actions">
+  
+          <!-- SEARCH -->
+  
+          <div class="search-box">
+  
+            <span>⌕</span>
+  
+            <input
+              type="text"
+              placeholder="Search by venue..."
+              [value]="search()"
+              (input)="onSearch($any($event.target).value)"
+            />
+  
+          </div>
+  
+  
+          <!-- STATUS -->
+  
+          <select
+            [value]="status()"
+            (change)="onStatusChange($any($event.target).value)"
+          >
+  
+            <option value="">
+              All Statuses
+            </option>
+  
+            <option value="SCHEDULED">
+              Scheduled
+            </option>
+  
+            <option value="LIVE">
+              Live
+            </option>
+  
+            <option value="FINISHED">
+              Finished
+            </option>
+  
+            <option value="CANCELLED">
+              Cancelled
+            </option>
+  
+          </select>
+  
+        </div>
+  
+      </div>
+  
+  
+      <!-- =================================================== -->
+      <!-- LOADING -->
+      <!-- =================================================== -->
+  
+      @if (loading()) {
+  
+        <div class="loading">
+          Loading matches...
+        </div>
+  
+      }
+  
+  
+      <!-- =================================================== -->
+      <!-- EMPTY -->
+      <!-- =================================================== -->
+  
+      @else if (matches().length === 0) {
+  
+        <div class="empty-state">
+  
+          <div class="empty-icon">
+            ◈
+          </div>
+  
+          <h3>
+            No matches found
+          </h3>
+  
+          <p>
+            There are no matches matching your current filters.
+          </p>
+  
+        </div>
+  
+      }
+  
+  
+      <!-- =================================================== -->
+      <!-- DATA -->
+      <!-- =================================================== -->
+  
+      @else {
+  
+        <div class="table-wrapper">
+  
+          <table>
+  
+            <thead>
+  
+              <tr>
+  
+                <th>
+                  HOME TEAM
+                </th>
+  
+                <th>
+                  AWAY TEAM
+                </th>
+  
+                <th>
+                  VENUE
+                </th>
+  
+                <th>
+                  SCHEDULED
+                </th>
+  
+                <th>
+                  STATUS
+                </th>
+  
+                <th>
+                  SCORE
+                </th>
+  
+              </tr>
+  
+            </thead>
+  
+  
+            <tbody>
+  
+              @for (
+                match of matches();
+                track match.id
+              ) {
+  
+                <tr>
+  
+                  <!-- HOME TEAM -->
+  
+                  <td>
+  
+                    <div class="team">
+  
+                      @if (match.homeTeam?.logoUrl) {
+  
+                        <img
+                          [src]="match.homeTeam?.logoUrl"
+                          [alt]="match.homeTeam?.name || 'Home team'"
+                        />
+  
+                      } @else {
+  
+                        <div class="team-placeholder">
+                          ⚽
+                        </div>
+  
+                      }
+  
+                      <strong>
+                        {{ match.homeTeam?.name || '—' }}
+                      </strong>
+  
+                    </div>
+  
+                  </td>
+  
+  
+                  <!-- AWAY TEAM -->
+  
+                  <td>
+  
+                    <div class="team">
+  
+                      @if (match.awayTeam?.logoUrl) {
+  
+                        <img
+                          [src]="match.awayTeam?.logoUrl"
+                          [alt]="match.awayTeam?.name || 'Away team'"
+                        />
+  
+                      } @else {
+  
+                        <div class="team-placeholder">
+                          ⚽
+                        </div>
+  
+                      }
+  
+                      <strong>
+                        {{ match.awayTeam?.name || '—' }}
+                      </strong>
+  
+                    </div>
+  
+                  </td>
+  
+  
+                  <!-- VENUE -->
+  
+                  <td>
+                    {{ match.venue || '—' }}
+                  </td>
+  
+  
+                  <!-- SCHEDULED -->
+  
+                  <td>
+  
+                    @if (match.scheduledAt) {
+  
+                        {{ match.scheduledAt | date:'MMM d, y • h:mm a' }}
+
+  
+                    } @else {
+  
+                      —
+  
+                    }
+  
+                  </td>
+  
+  
+                  <!-- STATUS -->
+  
+                  <td>
+  
+                    <span
+                      class="status"
+                      [class.scheduled]="match.status === 'SCHEDULED'"
+                      [class.live]="match.status === 'LIVE'"
+                      [class.finished]="match.status === 'FINISHED'"
+                      [class.cancelled]="match.status === 'CANCELLED'"
+                    >
+  
+                      {{ statusLabel(match.status) }}
+  
+                    </span>
+  
+                  </td>
+  
+  
+                  <!-- SCORE -->
+  
+                  <td>
+  
+                    @if (
+                      match.homeScore !== undefined ||
+                      match.awayScore !== undefined
+                    ) {
+  
+                      <strong>
+  
+                        {{ match.homeScore ?? 0 }}
+  
+                        -
+  
+                        {{ match.awayScore ?? 0 }}
+  
+                      </strong>
+  
+                    } @else {
+  
+                      —
+  
+                    }
+  
+                  </td>
+  
+                </tr>
+  
+              }
+  
+            </tbody>
+  
+          </table>
+  
+        </div>
+  
+  
+        <!-- ================================================= -->
+        <!-- PAGINATION -->
+        <!-- ================================================= -->
+  
+        <div class="pagination">
+  
+          <span>
+            Page {{ page() }} of {{ totalPages() }}
+          </span>
+  
+  
+          <div>
+  
+            <button
+              type="button"
+              [disabled]="page() <= 1 || loading()"
+              (click)="previousPage()"
+            >
+              Previous
+            </button>
+  
+  
+            <button
+              type="button"
+              [disabled]="page() >= totalPages() || loading()"
+              (click)="nextPage()"
+            >
+              Next
+            </button>
+  
+          </div>
+  
+        </div>
+  
+      }
+  
+    </section>
+  
+  </div>
+  

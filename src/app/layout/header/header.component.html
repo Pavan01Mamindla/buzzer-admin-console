@@ -1,0 +1,58 @@
+<header class="header">
+
+    <div class="header-left">
+  
+      <div class="title">
+        BUZZER ADMIN CONSOLE
+      </div>
+  
+    </div>
+  
+  
+    <div class="header-right">
+  
+      <div class="search">
+  
+        <span>⌕</span>
+  
+        <input
+          type="search"
+          placeholder="Search..."
+        />
+  
+      </div>
+  
+  
+      <div class="user">
+  
+        <div class="avatar">
+          {{ userEmail.charAt(0).toUpperCase() }}
+        </div>
+  
+        <div class="user-info">
+  
+          <strong>
+            Admin
+          </strong>
+  
+          <small>
+            {{ userEmail }}
+          </small>
+  
+        </div>
+  
+      </div>
+  
+  
+      <button
+        class="signout"
+        type="button"
+        (click)="logout()"
+      >
+        Sign out
+      </button>
+  
+    </div>
+  
+  </header>
+  

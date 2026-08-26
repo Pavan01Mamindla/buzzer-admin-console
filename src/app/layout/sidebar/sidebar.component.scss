@@ -1,0 +1,147 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.sidebar {
+  width: 250px;
+  height: 100vh;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+
+  background: #131515;
+  border-right: 1px solid #292b2b;
+
+  color: #fff;
+
+  transition:
+    width 180ms ease;
+
+  &.collapsed {
+    width: 76px;
+  }
+}
+
+.brand {
+  height: 76px;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 0 20px;
+
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.brand-mark {
+  width: 36px;
+  height: 36px;
+
+  display: grid;
+  place-items: center;
+
+  background: #ffb414;
+  color: #131515;
+
+  border-radius: 9px;
+
+  font-weight: 900;
+}
+
+.collapse-button {
+  position: absolute;
+
+  top: 58px;
+  right: -14px;
+
+  width: 28px;
+  height: 28px;
+
+  border: 1px solid #333;
+  border-radius: 50%;
+
+  background: #212121;
+  color: #fff;
+
+  cursor: pointer;
+
+  z-index: 5;
+}
+
+.navigation {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  padding: 18px 12px;
+}
+
+.navigation a,
+.logout-button {
+  min-height: 46px;
+
+  display: flex;
+  align-items: center;
+  gap: 13px;
+
+  padding: 0 14px;
+
+  border: 0;
+  border-radius: 9px;
+
+  color: #aeb2b2;
+
+  background: transparent;
+
+  text-decoration: none;
+
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: all 150ms ease;
+
+  &:hover {
+    background: #212121;
+    color: #fff;
+  }
+
+  &.active {
+    background: rgba(255, 180, 20, 0.12);
+    color: #ffb414;
+  }
+}
+
+.icon {
+  width: 22px;
+
+  display: inline-flex;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  font-size: 17px;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 12px;
+  border-top: 1px solid #292b2b;
+}
+
+.logout-button {
+  width: 100%;
+  color: #ff8f8f;
+
+  &:hover {
+    background: rgba(236, 25, 60, 0.12);
+    color: #ec193c;
+  }
+}

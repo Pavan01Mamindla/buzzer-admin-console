@@ -1,0 +1,104 @@
+<div class="dialog">
+
+  <div class="dialog-header">
+    <div>
+      <h2>{{ editing ? 'Edit Sport' : 'Add Sport' }}</h2>
+      <p>
+        {{ editing
+          ? 'Update the sport details.'
+          : 'Add a new sport to the catalogue.' }}
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="close-button"
+      (click)="cancel()"
+    >
+      ×
+    </button>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+
+    <div class="field">
+
+      <label for="name">
+        Sport name
+      </label>
+
+      <input
+        id="name"
+        type="text"
+        formControlName="name"
+        placeholder="e.g. Football"
+      />
+
+      @if (
+        form.controls.name.invalid &&
+        form.controls.name.touched
+      ) {
+        <small>
+          Sport name is required.
+        </small>
+      }
+
+    </div>
+
+    <div class="field">
+
+      <label for="description">
+        Description
+      </label>
+
+      <textarea
+        id="description"
+        rows="4"
+        formControlName="description"
+        placeholder="Describe the sport..."
+      ></textarea>
+
+    </div>
+
+    <div class="field">
+
+      <label for="iconUrl">
+        Icon URL
+      </label>
+
+      <input
+        id="iconUrl"
+        type="url"
+        formControlName="iconUrl"
+        placeholder="https://..."
+      />
+
+      <span class="hint">
+        Use an image URL for now. Upload functionality is not required.
+      </span>
+
+    </div>
+
+    <div class="dialog-actions">
+
+      <button
+        type="button"
+        class="cancel-button"
+        (click)="cancel()"
+      >
+        Cancel
+      </button>
+
+      <button
+        type="submit"
+        class="save-button"
+        [disabled]="form.invalid"
+      >
+        {{ editing ? 'Save Changes' : 'Add Sport' }}
+      </button>
+
+    </div>
+
+  </form>
+
+</div>

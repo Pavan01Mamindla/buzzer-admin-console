@@ -1,0 +1,273 @@
+<section class="dashboard">
+
+  <div class="page-header">
+    <div>
+      <span class="eyebrow">BUZZER ADMIN CONSOLE</span>
+
+      <h1>Dashboard</h1>
+
+      <p>
+        Overview of your sports platform and activity.
+      </p>
+    </div>
+
+    <button
+      class="refresh-button"
+      type="button"
+      (click)="loadDashboard()"
+      [disabled]="loading"
+    >
+      ↻ Refresh
+    </button>
+  </div>
+
+
+  @if (loading) {
+
+    <div class="loading-card">
+      <div class="spinner"></div>
+      <span>Loading dashboard...</span>
+    </div>
+
+  } @else if (error) {
+
+    <div class="error-card">
+      <strong>Something went wrong</strong>
+      <span>{{ error }}</span>
+
+      <button
+        type="button"
+        (click)="loadDashboard()"
+      >
+        Try again
+      </button>
+    </div>
+
+  } @else {
+
+    <!-- PRIMARY STATS -->
+
+    <div class="stats">
+
+      <article class="stat-card revenue">
+        <div class="stat-top">
+          <span>Gross Revenue</span>
+          <span class="stat-icon">$</span>
+        </div>
+
+        <strong>
+          {{ getRevenue() | currency:'USD':'symbol':'1.0-2' }}
+        </strong>
+
+        <small>Total platform revenue</small>
+      </article>
+
+
+      <article class="stat-card">
+        <div class="stat-top">
+          <span>Matches</span>
+          <span class="stat-icon">◈</span>
+        </div>
+
+        <strong>{{ getMatchCount() }}</strong>
+
+        <small>Matches in system</small>
+      </article>
+
+
+      <article class="stat-card">
+        <div class="stat-top">
+          <span>Users</span>
+          <span class="stat-icon">A</span>
+        </div>
+
+        <strong>{{ getUserCount() }}</strong>
+
+        <small>Registered users</small>
+      </article>
+
+
+      <article class="stat-card">
+        <div class="stat-top">
+          <span>Engagement</span>
+          <span class="stat-icon">↗</span>
+        </div>
+
+        <strong>{{ getEngagementCount() }}</strong>
+
+        <small>Match events</small>
+      </article>
+
+    </div>
+
+
+    <!-- PAYMENT OVERVIEW -->
+
+    <section class="section">
+
+      <div class="section-header">
+        <div>
+          <h2>Payment Overview</h2>
+          <p>Current payment activity</p>
+        </div>
+      </div>
+
+      <div class="payment-grid">
+
+        <div class="payment-card completed">
+          <span>Completed</span>
+          <strong>{{ getCompleted() }}</strong>
+        </div>
+
+        <div class="payment-card pending">
+          <span>Pending</span>
+          <strong>{{ getPending() }}</strong>
+        </div>
+
+        <div class="payment-card failed">
+          <span>Failed</span>
+          <strong>{{ getFailed() }}</strong>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- RECENT ACTIVITY -->
+
+    <div class="activity-grid">
+
+      <section class="panel">
+
+        <div class="panel-header">
+          <div>
+            <h2>Recent Matches</h2>
+            <p>Latest scheduled matches</p>
+          </div>
+
+          <a routerLink="/matches">
+            View all
+          </a>
+        </div>
+
+        @if (recentMatches.length) {
+
+          <div class="activity-list">
+
+            @for (match of recentMatches; track $index) {
+
+              <div class="activity-row">
+
+                <div class="team-info">
+                  <strong>
+                    {{ match.homeTeam?.name || match.homeTeamName || match.home || 'Home Team' }}
+                  </strong>
+
+                  <span>vs</span>
+
+                  <strong>
+                    {{ match.awayTeam?.name || match.awayTeamName || match.away || 'Away Team' }}
+                  </strong>
+                </div>
+
+                <div class="activity-meta">
+                  <span>
+                    {{ match.venue || '—' }}
+                  </span>
+
+                  <span class="badge">
+                    {{ match.status || 'SCHEDULED' }}
+                  </span>
+                </div>
+
+              </div>
+
+            }
+
+          </div>
+
+        } @else {
+
+          <div class="empty">
+            No matches available.
+          </div>
+
+        }
+
+      </section>
+
+
+      <section class="panel">
+
+        <div class="panel-header">
+          <div>
+            <h2>Recent Transactions</h2>
+            <p>Latest payment activity</p>
+          </div>
+
+          <a routerLink="/finance">
+            View all
+          </a>
+        </div>
+
+        @if (recentTransactions.length) {
+
+          <div class="activity-list">
+
+            @for (
+              transaction of recentTransactions;
+              track $index
+            ) {
+
+              <div class="activity-row">
+
+                <div>
+                  <strong>
+                    {{ transaction.reference || 'Transaction' }}
+                  </strong>
+
+                  <span class="customer">
+                    {{ transaction.customer || transaction.customerEmail || '—' }}
+                  </span>
+                </div>
+
+                <div class="transaction-info">
+
+                  <strong>
+                    {{ transaction.amount || 0 }}
+                    {{ transaction.currency || 'USD' }}
+                  </strong>
+
+                  <span
+                    class="badge"
+                    [class.success]="transaction.status === 'COMPLETED'"
+                    [class.warning]="transaction.status === 'PENDING'"
+                    [class.danger]="transaction.status === 'FAILED'"
+                  >
+                    {{ transaction.status || '—' }}
+                  </span>
+
+                </div>
+
+              </div>
+
+            }
+
+          </div>
+
+        } @else {
+
+          <div class="empty">
+            No transactions available.
+          </div>
+
+        }
+
+      </section>
+
+    </div>
+
+  }
+
+</section>

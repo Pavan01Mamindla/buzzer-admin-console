@@ -1,0 +1,141 @@
+<aside
+  class="sidebar"
+  [class.collapsed]="collapsed"
+>
+
+  <!-- Brand -->
+  <div class="brand">
+
+    <div class="brand-mark">
+      B
+    </div>
+
+    @if (!collapsed) {
+      <span>BUZZER</span>
+    }
+
+  </div>
+
+
+  <!-- Collapse -->
+  <button
+    class="collapse-button"
+    type="button"
+    (click)="toggle()"
+    [attr.aria-label]="
+      collapsed
+        ? 'Expand sidebar'
+        : 'Collapse sidebar'
+    "
+  >
+    {{ collapsed ? '→' : '←' }}
+  </button>
+
+
+  <!-- Navigation -->
+  <nav
+    class="navigation"
+    aria-label="Main navigation"
+  >
+
+    <!-- Dashboard -->
+    <a
+      routerLink="/dashboard"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <span class="icon">⌂</span>
+
+      @if (!collapsed) {
+        <span>Dashboard</span>
+      }
+    </a>
+
+
+    <!-- Sports -->
+    <a
+      routerLink="/sports"
+      routerLinkActive="active"
+    >
+      <span class="icon">⚽</span>
+
+      @if (!collapsed) {
+        <span>Sports</span>
+      }
+    </a>
+
+
+    <!-- Match Management -->
+    <a
+      routerLink="/matches"
+      routerLinkActive="active"
+    >
+      <span class="icon">◈</span>
+
+      @if (!collapsed) {
+        <span>Match Management</span>
+      }
+    </a>
+
+
+    <!-- Publishing -->
+    <a
+      routerLink="/publishing"
+      routerLinkActive="active"
+    >
+      <span class="icon">◉</span>
+
+      @if (!collapsed) {
+        <span>Publishing</span>
+      }
+    </a>
+
+
+    <!-- Finance -->
+    <a
+      routerLink="/finance"
+      routerLinkActive="active"
+    >
+      <span class="icon">€</span>
+
+      @if (!collapsed) {
+        <span>Finance</span>
+      }
+    </a>
+
+
+    <!-- System -->
+    <a
+      routerLink="/system"
+      routerLinkActive="active"
+    >
+      <span class="icon">⚙</span>
+
+      @if (!collapsed) {
+        <span>System</span>
+      }
+    </a>
+
+  </nav>
+
+
+  <!-- Footer -->
+  <div class="sidebar-footer">
+
+    <button
+      type="button"
+      class="logout-button"
+      (click)="logout()"
+    >
+
+      <span class="icon">↪</span>
+
+      @if (!collapsed) {
+        <span>Sign out</span>
+      }
+
+    </button>
+
+  </div>
+
+</aside>
