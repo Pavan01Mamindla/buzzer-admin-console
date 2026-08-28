@@ -1,14 +1,17 @@
 <section class="dashboard">
 
   <div class="page-header">
-    <div>
-      <span class="eyebrow">BUZZER ADMIN CONSOLE</span>
+
+    <div class="page-heading">
+
+      <span class="eyebrow">OVERVIEW</span>
 
       <h1>Dashboard</h1>
 
       <p>
         Overview of your sports platform and activity.
       </p>
+
     </div>
 
     <button
@@ -17,8 +20,10 @@
       (click)="loadDashboard()"
       [disabled]="loading"
     >
-      ↻ Refresh
+      <span class="refresh-icon">↻</span>
+      Refresh
     </button>
+
   </div>
 
 
@@ -32,8 +37,11 @@
   } @else if (error) {
 
     <div class="error-card">
-      <strong>Something went wrong</strong>
-      <span>{{ error }}</span>
+
+      <div>
+        <strong>Something went wrong</strong>
+        <span>{{ error }}</span>
+      </div>
 
       <button
         type="button"
@@ -41,17 +49,17 @@
       >
         Try again
       </button>
+
     </div>
 
   } @else {
 
-    <!-- PRIMARY STATS -->
-
     <div class="stats">
 
       <article class="stat-card revenue">
+
         <div class="stat-top">
-          <span>Gross Revenue</span>
+          <span class="stat-label">Gross Revenue</span>
           <span class="stat-icon">$</span>
         </div>
 
@@ -60,56 +68,63 @@
         </strong>
 
         <small>Total platform revenue</small>
+
       </article>
 
 
       <article class="stat-card">
+
         <div class="stat-top">
-          <span>Matches</span>
+          <span class="stat-label">Matches</span>
           <span class="stat-icon">◈</span>
         </div>
 
         <strong>{{ getMatchCount() }}</strong>
 
         <small>Matches in system</small>
+
       </article>
 
 
       <article class="stat-card">
+
         <div class="stat-top">
-          <span>Users</span>
+          <span class="stat-label">Users</span>
           <span class="stat-icon">A</span>
         </div>
 
         <strong>{{ getUserCount() }}</strong>
 
         <small>Registered users</small>
+
       </article>
 
 
       <article class="stat-card">
+
         <div class="stat-top">
-          <span>Engagement</span>
+          <span class="stat-label">Engagement</span>
           <span class="stat-icon">↗</span>
         </div>
 
         <strong>{{ getEngagementCount() }}</strong>
 
         <small>Match events</small>
+
       </article>
 
     </div>
 
 
-    <!-- PAYMENT OVERVIEW -->
-
     <section class="section">
 
       <div class="section-header">
+
         <div>
           <h2>Payment Overview</h2>
           <p>Current payment activity</p>
         </div>
+
       </div>
 
       <div class="payment-grid">
@@ -134,13 +149,12 @@
     </section>
 
 
-    <!-- RECENT ACTIVITY -->
-
     <div class="activity-grid">
 
       <section class="panel">
 
         <div class="panel-header">
+
           <div>
             <h2>Recent Matches</h2>
             <p>Latest scheduled matches</p>
@@ -149,7 +163,9 @@
           <a routerLink="/matches">
             View all
           </a>
+
         </div>
+
 
         @if (recentMatches.length) {
 
@@ -160,6 +176,7 @@
               <div class="activity-row">
 
                 <div class="team-info">
+
                   <strong>
                     {{ match.homeTeam?.name || match.homeTeamName || match.home || 'Home Team' }}
                   </strong>
@@ -169,9 +186,11 @@
                   <strong>
                     {{ match.awayTeam?.name || match.awayTeamName || match.away || 'Away Team' }}
                   </strong>
+
                 </div>
 
                 <div class="activity-meta">
+
                   <span>
                     {{ match.venue || '—' }}
                   </span>
@@ -179,6 +198,7 @@
                   <span class="badge">
                     {{ match.status || 'SCHEDULED' }}
                   </span>
+
                 </div>
 
               </div>
@@ -201,6 +221,7 @@
       <section class="panel">
 
         <div class="panel-header">
+
           <div>
             <h2>Recent Transactions</h2>
             <p>Latest payment activity</p>
@@ -209,7 +230,9 @@
           <a routerLink="/finance">
             View all
           </a>
+
         </div>
+
 
         @if (recentTransactions.length) {
 
@@ -222,7 +245,8 @@
 
               <div class="activity-row">
 
-                <div>
+                <div class="transaction-main">
+
                   <strong>
                     {{ transaction.reference || 'Transaction' }}
                   </strong>
@@ -230,6 +254,7 @@
                   <span class="customer">
                     {{ transaction.customer || transaction.customerEmail || '—' }}
                   </span>
+
                 </div>
 
                 <div class="transaction-info">

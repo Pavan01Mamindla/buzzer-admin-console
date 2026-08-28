@@ -3,7 +3,6 @@
   [class.collapsed]="collapsed"
 >
 
-  <!-- Brand -->
   <div class="brand">
 
     <div class="brand-mark">
@@ -11,34 +10,28 @@
     </div>
 
     @if (!collapsed) {
-      <span>BUZZER</span>
+      <div class="brand-text">
+        <strong>BUZZER</strong>
+        <span>ADMIN CONSOLE</span>
+      </div>
     }
 
   </div>
 
-
-  <!-- Collapse -->
   <button
     class="collapse-button"
     type="button"
     (click)="toggle()"
-    [attr.aria-label]="
-      collapsed
-        ? 'Expand sidebar'
-        : 'Collapse sidebar'
-    "
+    [attr.aria-label]="collapsed ? 'Expand sidebar' : 'Collapse sidebar'"
   >
     {{ collapsed ? '→' : '←' }}
   </button>
 
-
-  <!-- Navigation -->
   <nav
     class="navigation"
     aria-label="Main navigation"
   >
 
-    <!-- Dashboard -->
     <a
       routerLink="/dashboard"
       routerLinkActive="active"
@@ -47,12 +40,10 @@
       <span class="icon">⌂</span>
 
       @if (!collapsed) {
-        <span>Dashboard</span>
+        <span class="label">Dashboard</span>
       }
     </a>
 
-
-    <!-- Sports -->
     <a
       routerLink="/sports"
       routerLinkActive="active"
@@ -60,12 +51,10 @@
       <span class="icon">⚽</span>
 
       @if (!collapsed) {
-        <span>Sports</span>
+        <span class="label">Sports</span>
       }
     </a>
 
-
-    <!-- Match Management -->
     <a
       routerLink="/matches"
       routerLinkActive="active"
@@ -73,12 +62,10 @@
       <span class="icon">◈</span>
 
       @if (!collapsed) {
-        <span>Match Management</span>
+        <span class="label">Match Management</span>
       }
     </a>
 
-
-    <!-- Publishing -->
     <a
       routerLink="/publishing"
       routerLinkActive="active"
@@ -86,12 +73,10 @@
       <span class="icon">◉</span>
 
       @if (!collapsed) {
-        <span>Publishing</span>
+        <span class="label">Publishing</span>
       }
     </a>
 
-
-    <!-- Finance -->
     <a
       routerLink="/finance"
       routerLinkActive="active"
@@ -99,12 +84,10 @@
       <span class="icon">€</span>
 
       @if (!collapsed) {
-        <span>Finance</span>
+        <span class="label">Finance</span>
       }
     </a>
 
-
-    <!-- System -->
     <a
       routerLink="/system"
       routerLinkActive="active"
@@ -112,14 +95,12 @@
       <span class="icon">⚙</span>
 
       @if (!collapsed) {
-        <span>System</span>
+        <span class="label">System</span>
       }
     </a>
 
   </nav>
 
-
-  <!-- Footer -->
   <div class="sidebar-footer">
 
     <button
@@ -127,13 +108,11 @@
       class="logout-button"
       (click)="logout()"
     >
-
       <span class="icon">↪</span>
 
       @if (!collapsed) {
-        <span>Sign out</span>
+        <span class="label">Sign out</span>
       }
-
     </button>
 
   </div>

@@ -1,11 +1,16 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+
 import { DashboardService } from '../../../../core/services/dashboard.service';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    RouterLink
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
@@ -21,6 +26,7 @@ export class DashboardComponent implements OnInit {
   users: any = null;
   engagement: any = null;
   paymentSummary: any = null;
+
   recentMatches: any[] = [];
   recentTransactions: any[] = [];
 
@@ -38,7 +44,6 @@ export class DashboardComponent implements OnInit {
         this.matches = data.matches;
         this.users = data.users;
         this.engagement = data.engagement;
-
         this.paymentSummary = data.paymentSummary;
 
         this.recentMatches =
@@ -52,7 +57,10 @@ export class DashboardComponent implements OnInit {
 
       error: (err) => {
         console.error('Dashboard load failed', err);
-        this.error = 'Unable to load dashboard data.';
+
+        this.error =
+          'Unable to load dashboard data.';
+
         this.loading = false;
       }
     });
@@ -79,7 +87,9 @@ export class DashboardComponent implements OnInit {
   }
 
   getRevenue(): number {
-    const data = this.paymentSummary?.data ?? this.paymentSummary;
+    const data =
+      this.paymentSummary?.data ??
+      this.paymentSummary;
 
     return Number(
       data?.grossRevenue ??
@@ -90,7 +100,9 @@ export class DashboardComponent implements OnInit {
   }
 
   getCompleted(): number {
-    const data = this.paymentSummary?.data ?? this.paymentSummary;
+    const data =
+      this.paymentSummary?.data ??
+      this.paymentSummary;
 
     return Number(
       data?.completed ??
@@ -101,7 +113,9 @@ export class DashboardComponent implements OnInit {
   }
 
   getPending(): number {
-    const data = this.paymentSummary?.data ?? this.paymentSummary;
+    const data =
+      this.paymentSummary?.data ??
+      this.paymentSummary;
 
     return Number(
       data?.pending ??
@@ -112,7 +126,9 @@ export class DashboardComponent implements OnInit {
   }
 
   getFailed(): number {
-    const data = this.paymentSummary?.data ?? this.paymentSummary;
+    const data =
+      this.paymentSummary?.data ??
+      this.paymentSummary;
 
     return Number(
       data?.failed ??

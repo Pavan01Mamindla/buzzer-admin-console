@@ -1,8 +1,16 @@
 <div class="dialog">
 
   <div class="dialog-header">
+
     <div>
-      <h2>{{ editing ? 'Edit Sport' : 'Add Sport' }}</h2>
+      <span class="dialog-eyebrow">
+        SPORTS MANAGEMENT
+      </span>
+
+      <h2>
+        {{ editing ? 'Edit Sport' : 'Add Sport' }}
+      </h2>
+
       <p>
         {{ editing
           ? 'Update the sport details.'
@@ -14,17 +22,24 @@
       type="button"
       class="close-button"
       (click)="cancel()"
+      aria-label="Close dialog"
     >
       ×
     </button>
+
   </div>
 
-  <form [formGroup]="form" (ngSubmit)="submit()">
+
+  <form
+    [formGroup]="form"
+    (ngSubmit)="submit()"
+  >
 
     <div class="field">
 
       <label for="name">
         Sport name
+        <span>*</span>
       </label>
 
       <input
@@ -32,6 +47,7 @@
         type="text"
         formControlName="name"
         placeholder="e.g. Football"
+        autocomplete="off"
       />
 
       @if (
@@ -44,6 +60,7 @@
       }
 
     </div>
+
 
     <div class="field">
 
@@ -59,6 +76,7 @@
       ></textarea>
 
     </div>
+
 
     <div class="field">
 
@@ -78,6 +96,7 @@
       </span>
 
     </div>
+
 
     <div class="dialog-actions">
 
