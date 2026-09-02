@@ -1,0 +1,94 @@
+<div class="page">
+  <div class="stat-row">
+    <app-stat-card label="Sports" [value]="totalSports()" [loading]="loading()" />
+    <app-stat-card label="Governing Bodies" [value]="totalGoverningBodies()" [loading]="loading()" />
+    <app-stat-card label="Organisations" [value]="totalOrganisations()" [loading]="loading()" />
+    <app-stat-card label="Participants" [value]="totalParticipants()" [loading]="loading()" />
+  </div>
+
+  <div class="table-card card">
+    <div class="table-card__head">
+      <span class="table-card__title">Sport</span>
+      <button class="btn btn-primary" type="button" (click)="openAddDialog()" *ngIf="canWrite()">
+        <app-icon name="plus" [size]="16" />
+        Add Sport
+      </button>
+    </div>
+
+    <p class="banner banner--error" *ngIf="error()">{{ error() }}</p>
+
+    <table class="data-table" *ngIf="!loading() || sports().length">
+      <thead>
+        <tr>
+          <th>Sport</th>
+          <th>Governing Bodies</th>
+          <th>Organisations</th>
+          <th>Participants</th>
+          <th class="actions-col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let sport of sports()" (click)="openSport(sport)" class="clickable-row">
+          <td>
+            <div class="sport-cell">
+              <span class="sport-icon" [style.background]="sport['color'] || 'var(--surface-3)'">
+                <img *ngIf="sport.iconUrl" [src]="sport.iconUrl" [alt]="sport.name" />
+                <span *ngIf="!sport.iconUrl">{{ sport.name.charAt(0) }}</span>
+              </span>
+              {{ sport.name }}
+            </div>
+          </td>
+          <td>{{ sport['governingBodiesCount'] ?? '—' }}</td>
+          <td>{{ sport['organisationsCount'] ?? '—' }}</td>
+          <td>{{ sport['participantsCount'] ?? '—' }}</td>
+          <td class="actions-col">
+            <button class="btn-icon" type="button" (click)="openEditDialog(sport, $event)" *ngIf="canWrite()" aria-label="Edit">
+              <app-icon name="edit" [size]="15" />
+            </button>
+            <button class="btn-icon btn-icon-danger" type="button" (click)="askDelete(sport, $event)" *ngIf="canWrite()" aria-label="Delete">
+              <app-icon name="trash" [size]="15" />
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="empty-state" *ngIf="!loading() && sports().length === 0 && !error()">
+      No sports found{{ pageSearch.term() ? ' for "' + pageSearch.term() + '"' : '' }}.
+    </p>
+
+    <p class="loading-state" *ngIf="loading() && sports().length === 0">Loading sports…</p>
+
+    <div class="pagination" *ngIf="totalPages() > 1">
+      <button class="btn-icon" type="button" (click)="goToPage(-1)" [disabled]="page() === 1">
+        <app-icon name="chevronLeft" [size]="14" />
+      </button>
+      <span>Page {{ page() }} of {{ totalPages() }}</span>
+      <button class="btn-icon" type="button" (click)="goToPage(1)" [disabled]="page() === totalPages()">
+        <app-icon name="chevronRight" [size]="14" />
+      </button>
+    </div>
+  </div>
+</div>
+
+<app-entity-form-dialog
+  *ngIf="showFormDialog()"
+  [title]="editingSport() ? 'Edit Sport' : 'Add Sport'"
+  [saveLabel]="editingSport() ? 'Save changes' : 'Save'"
+  [fields]="sportFields"
+  [initialValue]="editingSport() || {}"
+  [saving]="savingForm()"
+  [errorMessage]="formError()"
+  [fieldErrors]="formFieldErrors()"
+  (save)="saveSport($event)"
+  (close)="closeFormDialog()"
+/>
+
+<app-confirm-dialog
+  *ngIf="deletingSport()"
+  title="Delete sport"
+  [message]="'This will soft-delete \'' + deletingSport()?.name + '\'. It can be restored later by an admin.'"
+  [loading]="deleteLoading()"
+  (confirm)="confirmDelete()"
+  (cancel)="cancelDelete()"
+/>

@@ -1,0 +1,108 @@
+<div class="page">
+  <app-breadcrumbs [crumbs]="crumbs" />
+
+  <div class="detail-header card" *ngIf="sport() as s">
+    <div class="detail-header__left">
+      <div class="detail-avatar">
+        <img *ngIf="s.iconUrl" [src]="s.iconUrl" [alt]="s.name" />
+        <span *ngIf="!s.iconUrl">{{ s.name.charAt(0) }}</span>
+      </div>
+      <div>
+        <div class="detail-header__title">{{ s.name }}</div>
+        <div class="detail-header__meta">
+          <span *ngIf="s.createdAt">Created: {{ s.createdAt | date: 'MMM d, y, \'at\' h:mm' }}</span>
+          <span *ngIf="s.updatedAt">Updated: {{ s.updatedAt | date: 'MMM d, y, \'at\' h:mm' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stat-row">
+    <app-stat-card label="Governing Bodies" [value]="total()" [loading]="loading()" />
+    <app-stat-card label="Organisations" [value]="sport()?.['organisationsCount'] || 0" [loading]="loading()" />
+    <app-stat-card label="Participants" [value]="sport()?.['participantsCount'] || 0" [loading]="loading()" />
+  </div>
+
+  <div class="table-card card">
+    <div class="table-card__head">
+      <span class="table-card__title">Governing Bodies</span>
+      <button class="btn btn-primary" type="button" (click)="openAddDialog()" *ngIf="canWrite()">
+        <app-icon name="plus" [size]="16" />
+        Add Governing Body
+      </button>
+    </div>
+
+    <p class="banner banner--error" *ngIf="bodiesError()">
+      {{ bodiesError() }}
+      <button class="retry-link" type="button" (click)="loadBodies()">Retry</button>
+    </p>
+
+    <table class="data-table" *ngIf="!bodiesError() && (bodies().length || !loading())">
+      <thead>
+        <tr>
+          <th>Governing Body</th>
+          <th>Organisations</th>
+          <th>Participants</th>
+          <th class="actions-col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let body of bodies()" (click)="openBody(body)" class="clickable-row">
+          <td>
+            <div class="entity-cell">
+              <span class="entity-icon">
+                <img *ngIf="body.iconUrl" [src]="body.iconUrl" [alt]="body.name" />
+                <span *ngIf="!body.iconUrl">{{ body.name.charAt(0) }}</span>
+              </span>
+              {{ body.name }}
+              <app-icon *ngIf="body.verified" name="check" [size]="14" class="verified-tick" />
+            </div>
+          </td>
+          <td>{{ body.organisationsCount ?? '—' }}</td>
+          <td>{{ body.participantsCount ?? '—' }}</td>
+          <td class="actions-col">
+            <button class="btn-icon btn-icon-danger" type="button" (click)="askDelete(body, $event)" *ngIf="canWrite()" aria-label="Delete">
+              <app-icon name="trash" [size]="15" />
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="empty-state" *ngIf="!loading() && bodies().length === 0 && !bodiesError()">
+      No governing bodies yet{{ pageSearch.term() ? ' for "' + pageSearch.term() + '"' : '' }}. Add the first one above.
+    </p>
+    <p class="loading-state" *ngIf="loading() && bodies().length === 0">Loading governing bodies…</p>
+
+    <div class="pagination" *ngIf="totalPages() > 1">
+      <button class="btn-icon" type="button" (click)="goToPage(-1)" [disabled]="page() === 1">
+        <app-icon name="chevronLeft" [size]="14" />
+      </button>
+      <span>Page {{ page() }} of {{ totalPages() }}</span>
+      <button class="btn-icon" type="button" (click)="goToPage(1)" [disabled]="page() === totalPages()">
+        <app-icon name="chevronRight" [size]="14" />
+      </button>
+    </div>
+  </div>
+</div>
+
+<app-entity-form-dialog
+  *ngIf="showAddDialog()"
+  title="Add Governing Body"
+  saveLabel="Save"
+  [fields]="bodyFields"
+  [saving]="savingForm()"
+  [errorMessage]="formError()"
+  [fieldErrors]="formFieldErrors()"
+  (save)="saveBody($event)"
+  (close)="closeAddDialog()"
+/>
+
+<app-confirm-dialog
+  *ngIf="deletingBody()"
+  title="Delete governing body"
+  [message]="'This will soft-delete \'' + deletingBody()?.name + '\'.'"
+  [loading]="deleteLoading()"
+  (confirm)="confirmDelete()"
+  (cancel)="cancelDelete()"
+/>

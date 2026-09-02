@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build -- --configuration production
+
+  # Vercel deploys `main` automatically once the repo is connected in the
+  # Vercel dashboard (Project Settings -> Git -> Production Branch: main).
+  # This job is just a build gate so a broken build never reaches Vercel.

@@ -1,14 +1,24 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { AuthService } from '../auth/auth.service';
+import { map, catchError, of } from 'rxjs';
+import { AuthService } from '../services/auth.service';
 
 export const authGuard: CanActivateFn = () => {
-  const authService = inject(AuthService);
+  const auth = inject(AuthService);
   const router = inject(Router);
 
-  if (authService.isAuthenticated()) {
-    return true;
+  if (!auth.getAccessToken()) {
+    router.navigate(['/login']);
+    return of(false);
   }
 
-  return router.createUrlTree(['/login']);
+  // Always re-confirm identity + role from the server on entry - never trust a
+  // client-decoded JWT for authorization decisions.
+  return auth.fetchCurrentUser().pipe(
+    map(() => true),
+    catchError(() => {
+      auth.logout();
+      return of(false);
+    })
+  );
 };

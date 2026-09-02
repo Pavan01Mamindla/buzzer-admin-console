@@ -1,134 +1,107 @@
-@use '@angular/material' as mat;
+:root {
+  --surface-0: #0c0d0d;
+  --surface-1: #131515;
+  --surface-2: #212121;
+  --surface-3: #2a2b2b;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
 
-html {
-  @include mat.theme((
-    color: (
-      theme-type: dark,
-    ),
-    typography: Roboto,
-    density: 0,
-  ));
+  --accent-yellow: #FFB414;
+  --accent-red: #EC193C;
+  --accent-green: #2ED368;
+
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(255, 255, 255, 0.6);
+  --text-muted: rgba(255, 255, 255, 0.38);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
-html,
-body {
-  width: 100%;
+* { box-sizing: border-box; }
+
+html, body {
   height: 100%;
-}
-
-html {
-  color-scheme: dark;
-  background: #131515;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-
-  background: #131515;
-  color: #ffffff;
-
-  font-family:
-    Inter,
-    Roboto,
-    "Helvetica Neue",
-    Arial,
-    sans-serif;
-
+  font-family: var(--font-sans);
+  background: var(--surface-0);
+  color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-* {
-  box-sizing: border-box;
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; }
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.05s ease;
 }
+.btn:active { transform: scale(0.98); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-button,
-input,
-textarea,
-select {
-  font: inherit;
+.btn-primary { background: var(--accent-red); color: #fff; }
+.btn-primary:hover:not(:disabled) { opacity: 0.92; }
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-strong);
 }
+.btn-secondary:hover:not(:disabled) { background: var(--surface-2); }
 
-button {
-  -webkit-tap-highlight-color: transparent;
-}
-
-a {
-  color: inherit;
-}
-
-::selection {
-  background: rgba(255, 180, 20, 0.25);
-  color: #fff;
-}
-
-/* Angular Material dialog */
-
-.buzzer-dialog {
-  --mat-dialog-container-color: #1d1f1f;
-
-  .mat-mdc-dialog-container {
-    padding: 0 !important;
-  }
-
-  .mdc-dialog__surface {
-    padding: 0 !important;
-
-    overflow: hidden;
-
-    border: 1px solid #303333;
-    border-radius: 9px !important;
-
-    background: #1d1f1f !important;
-    color: #fff !important;
-
-    box-shadow:
-      0 20px 60px rgba(0, 0, 0, 0.5) !important;
-  }
-}
-
-@media (max-width: 600px) {
-  .buzzer-dialog {
-    max-width: calc(100vw - 20px) !important;
-  }
-}* {
-  box-sizing: border-box;
-}
-
-html,
-body {
-  margin: 0;
-  min-height: 100%;
-  background: #111313;
-  color: #f5f5f5;
-  font-family:
-    Inter,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    Helvetica,
-    Arial,
-    sans-serif;
-}
-
-body {
-  font-size: 13px;
-}
-
-button,
-input,
-select,
-textarea {
-  font: inherit;
-}
-
-button {
+.btn-icon {
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
 }
+.btn-icon:hover { color: var(--text-primary); border-color: var(--border-strong); }
+.btn-icon-danger:hover { color: var(--accent-red); border-color: var(--accent-red); }
 
-a {
-  color: inherit;
+input, textarea, select {
+  font-family: inherit;
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  font-size: 14px;
+  outline: none;
+  width: 100%;
+}
+input::placeholder, textarea::placeholder { color: var(--text-muted); }
+input:focus, textarea:focus, select:focus { border-color: var(--accent-yellow); }
+
+.badge-verified { color: var(--accent-green); display: inline-flex; align-items: center; }
+
+.card {
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
 }

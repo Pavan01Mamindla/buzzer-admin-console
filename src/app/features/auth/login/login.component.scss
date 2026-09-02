@@ -1,0 +1,92 @@
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-0);
+}
+
+.login-card {
+  width: 414px;
+  max-width: calc(100vw - 40px);
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.logo__mark {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: var(--accent-yellow);
+  color: #131515;
+  font-weight: 800;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: skew(-6deg);
+}
+
+.logo__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.logo__name {
+  font-weight: 800;
+  font-size: 20px;
+}
+
+.logo__sub {
+  font-size: 12px;
+  color: var(--accent-yellow);
+  font-weight: 700;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.password-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hint {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  padding-left: 2px;
+}
+
+.error {
+  color: var(--accent-red);
+  font-size: 13px;
+  margin: -4px 0 0;
+}
+
+.waking {
+  color: var(--accent-yellow);
+  font-size: 13px;
+  margin: -4px 0 0;
+}
+
+.submit-btn {
+  margin-top: 6px;
+  width: 100%;
+  padding: 13px;
+  font-size: 15px;
+}

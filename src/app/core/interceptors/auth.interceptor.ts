@@ -1,91 +1,45 @@
-import {
-  HttpInterceptorFn
-} from '@angular/common/http';
+import { HttpErrorResponse, HttpInterceptorFn, HttpRequest } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { catchError, switchMap, throwError } from 'rxjs';
+import { AuthService } from '../services/auth.service';
 
-import {
-  inject
-} from '@angular/core';
+const AUTH_ENDPOINTS = ['/auth/login', '/auth/refresh', '/auth/logout'];
 
-import {
-  Router
-} from '@angular/router';
+function withAuthHeader(req: HttpRequest<unknown>, token: string | null): HttpRequest<unknown> {
+  return token ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } }) : req;
+}
 
-import {
-  catchError,
-  throwError
-} from 'rxjs';
+export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const auth = inject(AuthService);
+  const isAuthEndpoint = AUTH_ENDPOINTS.some((path) => req.url.includes(path));
 
-import {
-  TokenStorageService
-} from '../auth/token-storage.service';
+  const authReq = withAuthHeader(req, auth.getAccessToken());
 
-
-export const authInterceptor: HttpInterceptorFn = (
-  req,
-  next
-) => {
-
-  const tokenStorage =
-    inject(TokenStorageService);
-
-  const router =
-    inject(Router);
-
-
-  const token =
-    tokenStorage.getAccessToken();
-
-
-  /*
-   * Don't attach a token to login.
-   */
-
-  const isLoginRequest =
-    req.url.includes('/api/auth/login');
-
-
-  let request = req;
-
-
-  if (
-    token &&
-    !isLoginRequest
-  ) {
-
-    request = req.clone({
-
-      setHeaders: {
-        Authorization: `Bearer ${token}`
+  return next(authReq).pipe(
+    catchError((error: HttpErrorResponse) => {
+      // 403 is a permissions problem, not a session problem - surface it to the
+      // calling component instead of logging the user out.
+      if (error.status === 403) {
+        return throwError(() => error);
       }
 
-    });
-
-  }
-
-
-  return next(request).pipe(
-
-    catchError((error) => {
-
-      if (
-        error.status === 401 &&
-        !isLoginRequest
-      ) {
-
-        tokenStorage.clear();
-
-        router.navigate([
-          '/login'
-        ]);
-
+      // Only attempt a refresh for a genuine expired-session 401 on a non-auth
+      // request. If refreshing itself 401s, there's no session left to save.
+      if (error.status === 401 && !isAuthEndpoint && auth.getRefreshToken()) {
+        return auth.refreshAccessToken().pipe(
+          switchMap(() => next(withAuthHeader(req, auth.getAccessToken()))),
+          catchError((refreshErr) => {
+            auth.logout();
+            return throwError(() => refreshErr);
+          })
+        );
       }
 
+      if (error.status === 401) {
+        auth.logout();
+      }
 
-      return throwError(
-        () => error
-      );
-
+      return throwError(() => error);
     })
-
   );
 };

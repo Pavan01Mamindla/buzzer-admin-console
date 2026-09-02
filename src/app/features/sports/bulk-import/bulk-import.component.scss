@@ -1,0 +1,65 @@
+@use '../../../shared/styles/page';
+
+.import-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 560px;
+}
+.field label {
+  display: block;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+.field-hint {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin: 6px 0 0;
+}
+.file-drop {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.row-count {
+  font-size: 13px;
+  color: var(--accent-green);
+}
+.actions {
+  display: flex;
+  gap: 10px;
+}
+.progress {
+  height: 6px;
+  background: var(--surface-2);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.progress__bar {
+  height: 100%;
+  background: var(--accent-yellow);
+  transition: width 0.15s ease;
+}
+.results {
+  margin-top: 26px;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 20px;
+}
+.results__summary {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.pill {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  text-transform: capitalize;
+}
+.pill--added { background: rgba(46, 211, 104, 0.14); color: var(--accent-green); }
+.pill--skipped { background: rgba(255, 180, 20, 0.14); color: var(--accent-yellow); }
+.pill--error { background: rgba(236, 25, 60, 0.14); color: var(--accent-red); }

@@ -1,120 +1,56 @@
-<aside
-  class="sidebar"
-  [class.collapsed]="collapsed"
->
-
-  <div class="brand">
-
-    <div class="brand-mark">
-      B
-    </div>
-
-    @if (!collapsed) {
-      <div class="brand-text">
-        <strong>BUZZER</strong>
-        <span>ADMIN CONSOLE</span>
+<aside class="sidebar" [class.collapsed]="collapsed()">
+  <div class="sidebar__top">
+    <div class="brand" *ngIf="!collapsed()">
+      <div class="brand__mark">B</div>
+      <div class="brand__text">
+        <span class="brand__name">Buzzer</span>
+        <span class="brand__sub">Admin Console</span>
       </div>
-    }
-
+    </div>
+    <div class="brand__mark" *ngIf="collapsed()">B</div>
+    <button class="collapse-btn" type="button" (click)="toggleSidebar()" [attr.aria-label]="collapsed() ? 'Expand sidebar' : 'Collapse sidebar'">
+      <app-icon [name]="collapsed() ? 'chevronRight' : 'chevronLeft'" [size]="16" />
+    </button>
   </div>
 
-  <button
-    class="collapse-button"
-    type="button"
-    (click)="toggle()"
-    [attr.aria-label]="collapsed ? 'Expand sidebar' : 'Collapse sidebar'"
-  >
-    {{ collapsed ? '→' : '←' }}
-  </button>
+  <nav class="nav">
+    <div class="nav__group" *ngFor="let group of groups()">
+      <button class="nav__group-label" type="button" (click)="toggleGroup(group)" *ngIf="!collapsed()">
+        <span>{{ group.label }}</span>
+        <app-icon name="chevronDown" [size]="14" [style.transform]="group.expanded ? 'rotate(0deg)' : 'rotate(-90deg)'" />
+      </button>
 
-  <nav
-    class="navigation"
-    aria-label="Main navigation"
-  >
-
-    <a
-      routerLink="/dashboard"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }"
-    >
-      <span class="icon">⌂</span>
-
-      @if (!collapsed) {
-        <span class="label">Dashboard</span>
-      }
-    </a>
-
-    <a
-      routerLink="/sports"
-      routerLinkActive="active"
-    >
-      <span class="icon">⚽</span>
-
-      @if (!collapsed) {
-        <span class="label">Sports</span>
-      }
-    </a>
-
-    <a
-      routerLink="/matches"
-      routerLinkActive="active"
-    >
-      <span class="icon">◈</span>
-
-      @if (!collapsed) {
-        <span class="label">Match Management</span>
-      }
-    </a>
-
-    <a
-      routerLink="/publishing"
-      routerLinkActive="active"
-    >
-      <span class="icon">◉</span>
-
-      @if (!collapsed) {
-        <span class="label">Publishing</span>
-      }
-    </a>
-
-    <a
-      routerLink="/finance"
-      routerLinkActive="active"
-    >
-      <span class="icon">€</span>
-
-      @if (!collapsed) {
-        <span class="label">Finance</span>
-      }
-    </a>
-
-    <a
-      routerLink="/system"
-      routerLinkActive="active"
-    >
-      <span class="icon">⚙</span>
-
-      @if (!collapsed) {
-        <span class="label">System</span>
-      }
-    </a>
-
+      <ul class="nav__items" *ngIf="group.expanded || collapsed()">
+        <li *ngFor="let item of group.items">
+          <a
+            *ngIf="item.route && !item.comingSoon; else disabledItem"
+            class="nav__item"
+            [routerLink]="item.route"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: false }"
+          >
+            <app-icon [name]="item.icon" [size]="18" />
+            <span *ngIf="!collapsed()">{{ item.label }}</span>
+          </a>
+          <ng-template #disabledItem>
+            <span class="nav__item nav__item--disabled" [title]="item.comingSoon ? 'Coming soon' : ''">
+              <app-icon [name]="item.icon" [size]="18" />
+              <span *ngIf="!collapsed()">{{ item.label }}</span>
+              <span class="soon-pill" *ngIf="!collapsed() && item.comingSoon">Soon</span>
+            </span>
+          </ng-template>
+        </li>
+      </ul>
+    </div>
   </nav>
 
-  <div class="sidebar-footer">
-
-    <button
-      type="button"
-      class="logout-button"
-      (click)="logout()"
-    >
-      <span class="icon">↪</span>
-
-      @if (!collapsed) {
-        <span class="label">Sign out</span>
-      }
-    </button>
-
+  <div class="sidebar__footer">
+    <div class="user">
+      <div class="user__avatar">{{ initials() }}</div>
+      <div class="user__meta" *ngIf="!collapsed()">
+        <span class="user__email">{{ user?.email || 'admin@buzzerfan.com' }}</span>
+        <button class="user__signout" type="button" (click)="signOut()">Sign out</button>
+      </div>
+    </div>
   </div>
-
 </aside>

@@ -1,5 +1,4 @@
 export const environment = {
-    production: true,
-    apiUrl: 'https://backend-3ofw.onrender.com'
-  };
-  
+  production: false,
+  apiUrl: 'https://backend-3ofw.onrender.com/api'
+};

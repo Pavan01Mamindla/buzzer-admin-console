@@ -1,0 +1,86 @@
+<div class="page">
+  <div class="table-card card">
+    <div class="table-card__head">
+      <span class="table-card__title">Import rows</span>
+    </div>
+
+    <div class="import-form">
+      <div class="field">
+        <label>Target collection</label>
+        <select [ngModel]="targetKey()" (ngModelChange)="targetKey.set($event); onTargetChange()">
+          <option *ngFor="let t of targets" [value]="t.key">{{ t.label }}</option>
+        </select>
+        <span class="field-hint">{{ permissionHint() }}</span>
+      </div>
+
+      <div class="field" *ngIf="currentTarget().parentIdField">
+        <label>{{ currentTarget().parentIdLabel }}</label>
+        <input
+          type="text"
+          [placeholder]="'Paste the target ' + currentTarget().parentIdLabel"
+          [ngModel]="parentId()"
+          (ngModelChange)="parentId.set($event)"
+        />
+      </div>
+
+      <div class="field">
+        <label>CSV or JSON file</label>
+        <div class="file-drop">
+          <input id="import-file" type="file" accept=".csv,.json" (change)="onFileSelected($event)" hidden />
+          <label for="import-file" class="btn btn-secondary">
+            <app-icon name="upload" [size]="16" />
+            {{ fileName() || 'Choose file' }}
+          </label>
+          <span class="row-count" *ngIf="rows().length">{{ rows().length }} row(s) parsed</span>
+        </div>
+      </div>
+
+      <p class="banner banner--error" *ngIf="parseError()">{{ parseError() }}</p>
+
+      <p class="banner banner--info">
+        Rows are POSTed one at a time (never in parallel) to respect the 300 req/min limit.
+        201 counts as added, 409 as a skipped duplicate, and a 429 is retried once automatically.
+      </p>
+
+      <div class="actions">
+        <button class="btn btn-primary" type="button" [disabled]="rows().length === 0 || importing()" (click)="startImport()">
+          {{ importing() ? 'Importing ' + done() + ' / ' + total() + '…' : 'Start import' }}
+        </button>
+        <button class="btn btn-secondary" type="button" (click)="reset()" [disabled]="importing()">Reset</button>
+      </div>
+
+      <div class="progress" *ngIf="importing()">
+        <div class="progress__bar" [style.width.%]="total() ? (done() / total()) * 100 : 0"></div>
+      </div>
+    </div>
+
+    <div class="results" *ngIf="results().length">
+      <div class="results__summary">
+        <span class="pill pill--added">{{ addedCount }} added</span>
+        <span class="pill pill--skipped">{{ skippedCount }} skipped</span>
+        <span class="pill pill--error" *ngIf="errorCount">{{ errorCount }} errors</span>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Row</th>
+            <th>Status</th>
+            <th>Detail</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of results()">
+            <td>{{ r.row }}</td>
+            <td>
+              <span class="pill" [class.pill--added]="r.status === 'added'" [class.pill--skipped]="r.status === 'skipped'" [class.pill--error]="r.status === 'error'">
+                {{ r.status }}
+              </span>
+            </td>
+            <td>{{ r.reason || '—' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

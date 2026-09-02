@@ -1,0 +1,40 @@
+<div class="login-page">
+  <div class="login-card">
+    <div class="logo">
+      <div class="logo__mark">B</div>
+      <div class="logo__text">
+        <span class="logo__name">Buzzer</span>
+        <span class="logo__sub">Admin Console</span>
+      </div>
+    </div>
+
+    <form (ngSubmit)="submit()">
+      <input
+        type="email"
+        placeholder="Email Address*"
+        name="email"
+        [(ngModel)]="email"
+        required
+        autocomplete="username"
+      />
+      <div class="password-field">
+        <input
+          type="password"
+          placeholder="Password"
+          name="password"
+          [(ngModel)]="password"
+          required
+          autocomplete="current-password"
+        />
+        <span class="hint">Use the credentials provided by the team lead</span>
+      </div>
+
+      <p class="error" *ngIf="error()">{{ error() }}</p>
+      <p class="waking" *ngIf="wakingUp()">Waking the server up — this can take up to a minute on the first request.</p>
+
+      <button class="btn btn-primary submit-btn" type="submit" [disabled]="loading()">
+        {{ loading() ? 'Logging in…' : 'Login' }}
+      </button>
+    </form>
+  </div>
+</div>

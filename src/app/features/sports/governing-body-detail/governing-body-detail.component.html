@@ -1,0 +1,108 @@
+<div class="page">
+  <app-breadcrumbs [crumbs]="crumbs" />
+
+  <div class="detail-header card" *ngIf="body() as b">
+    <div class="detail-header__left">
+      <div class="detail-avatar">
+        <img *ngIf="b.iconUrl" [src]="b.iconUrl" [alt]="b.name" />
+        <span *ngIf="!b.iconUrl">{{ b.name.charAt(0) }}</span>
+      </div>
+      <div>
+        <div class="detail-header__title">
+          {{ b.name }}
+          <app-icon *ngIf="b.verified" name="check" [size]="16" class="verified-tick" />
+        </div>
+        <div class="detail-header__meta">
+          <span *ngIf="b.createdAt">Created: {{ b.createdAt | date: 'MMM d, y, \'at\' h:mm' }}</span>
+          <span *ngIf="b.updatedAt">Updated: {{ b.updatedAt | date: 'MMM d, y, \'at\' h:mm' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stat-row">
+    <app-stat-card label="Organisations" [value]="total()" [loading]="loading()" />
+    <app-stat-card label="Participants" [value]="body()?.['participantsCount'] || 0" [loading]="loading()" />
+  </div>
+
+  <div class="table-card card">
+    <div class="table-card__head">
+      <span class="table-card__title">Organisations</span>
+      <button class="btn btn-primary" type="button" (click)="openAddDialog()" *ngIf="canWrite()">
+        <app-icon name="plus" [size]="16" />
+        Add Organisation
+      </button>
+    </div>
+
+    <p class="banner banner--error" *ngIf="listError()">
+      {{ listError() }}
+      <button class="retry-link" type="button" (click)="loadOrganisations()">Retry</button>
+    </p>
+
+    <table class="data-table" *ngIf="!listError() && (organisations().length || !loading())">
+      <thead>
+        <tr>
+          <th>Organisation</th>
+          <th>Participants</th>
+          <th class="actions-col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let org of organisations()" (click)="openOrg(org)" class="clickable-row">
+          <td>
+            <div class="entity-cell">
+              <span class="entity-icon">
+                <img *ngIf="org.crestUrl || org.iconUrl" [src]="org.crestUrl || org.iconUrl" [alt]="org.name" />
+                <span *ngIf="!org.crestUrl && !org.iconUrl">{{ org.name.charAt(0) }}</span>
+              </span>
+              {{ org.name }}
+              <app-icon *ngIf="org.verified" name="check" [size]="14" class="verified-tick" />
+            </div>
+          </td>
+          <td>{{ org.participantsCount ?? '—' }}</td>
+          <td class="actions-col">
+            <button class="btn-icon btn-icon-danger" type="button" (click)="askDelete(org, $event)" *ngIf="canWrite()" aria-label="Delete">
+              <app-icon name="trash" [size]="15" />
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="empty-state" *ngIf="!loading() && organisations().length === 0 && !listError()">
+      No organisations yet{{ pageSearch.term() ? ' for "' + pageSearch.term() + '"' : '' }}. Add the first one above.
+    </p>
+    <p class="loading-state" *ngIf="loading() && organisations().length === 0">Loading organisations…</p>
+
+    <div class="pagination" *ngIf="totalPages() > 1">
+      <button class="btn-icon" type="button" (click)="goToPage(-1)" [disabled]="page() === 1">
+        <app-icon name="chevronLeft" [size]="14" />
+      </button>
+      <span>Page {{ page() }} of {{ totalPages() }}</span>
+      <button class="btn-icon" type="button" (click)="goToPage(1)" [disabled]="page() === totalPages()">
+        <app-icon name="chevronRight" [size]="14" />
+      </button>
+    </div>
+  </div>
+</div>
+
+<app-entity-form-dialog
+  *ngIf="showAddDialog()"
+  title="Add Organisation"
+  saveLabel="Save"
+  [fields]="orgFields"
+  [saving]="savingForm()"
+  [errorMessage]="formError()"
+  [fieldErrors]="formFieldErrors()"
+  (save)="saveOrg($event)"
+  (close)="closeAddDialog()"
+/>
+
+<app-confirm-dialog
+  *ngIf="deletingOrg()"
+  title="Delete organisation"
+  [message]="'This will soft-delete \'' + deletingOrg()?.name + '\'.'"
+  [loading]="deleteLoading()"
+  (confirm)="confirmDelete()"
+  (cancel)="cancelDelete()"
+/>

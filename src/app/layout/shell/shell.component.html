@@ -1,15 +1,13 @@
 <div class="shell">
-
   <app-sidebar />
-
-  <div class="main">
-
-    <app-header />
-
-    <main class="content">
+  <div class="shell__main">
+    <app-header
+      [title]="pageSearch.title()"
+      [searchTerm]="pageSearch.term()"
+      (searchTermChange)="pageSearch.setTerm($event)"
+    />
+    <div class="shell__content">
       <router-outlet />
-    </main>
-
+    </div>
   </div>
-
 </div>

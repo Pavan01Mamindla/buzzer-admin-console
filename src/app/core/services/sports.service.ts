@@ -1,140 +1,46 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
 import { environment } from '../../../environments/environment';
+import { ApiEnvelope, ApiListEnvelope, ListQuery, Sport } from '../models/api.model';
+import { PagedResult, toHttpParams, unwrap, unwrapList } from '../http/api-envelope.util';
 
-import {
-  Sport,
-  SportPayload,
-  SportsResponse
-} from '../../shared/models/sport.model';
-
-export interface OrganizationListResponse {
-  success: boolean;
-  data: unknown[];
-  meta: {
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-  };
+export interface SportPayload {
+  name: string;
+  description?: string;
+  iconUrl?: string;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class SportsService {
-
   private readonly http = inject(HttpClient);
+  /** Note the Z: `organizations`, not `organisations`/`orgs`. */
+  private readonly base = `${environment.apiUrl}/organizations/sports`;
 
-  private readonly endpoint =
-    `${environment.apiUrl}/api/organizations/sports`;
-
-  private readonly organizationsEndpoint =
-    `${environment.apiUrl}/api/organizations`;
-
-
-  // =========================================================
-  // SPORTS
-  // =========================================================
-
-  getSports(
-    search = '',
-    page = 1,
-    limit = 10
-  ): Observable<SportsResponse> {
-
-    let params = new HttpParams()
-      .set('page', page)
-      .set('limit', limit);
-
-    if (search.trim()) {
-      params = params.set(
-        'search',
-        search.trim()
-      );
-    }
-
-    return this.http.get<SportsResponse>(
-      this.endpoint,
-      { params }
+  list(query: ListQuery = {}): Observable<PagedResult<Sport>> {
+    return unwrapList(
+      this.http.get<ApiListEnvelope<Sport>>(this.base, { params: toHttpParams(query) })
     );
   }
 
-
-  createSport(
-    payload: SportPayload
-  ): Observable<unknown> {
-
-    return this.http.post(
-      this.endpoint,
-      payload
-    );
+  get(id: string): Observable<Sport> {
+    return unwrap(this.http.get<ApiEnvelope<Sport>>(`${this.base}/${id}`));
   }
 
-
-  updateSport(
-    id: string,
-    payload: Partial<SportPayload>
-  ): Observable<unknown> {
-
-    return this.http.patch(
-      `${this.endpoint}/${id}`,
-      payload
-    );
+  create(payload: SportPayload): Observable<Sport> {
+    return unwrap(this.http.post<ApiEnvelope<Sport>>(this.base, payload));
   }
 
-
-  deleteSport(
-    id: string
-  ): Observable<unknown> {
-
-    return this.http.delete(
-      `${this.endpoint}/${id}`
-    );
+  update(id: string, payload: Partial<SportPayload>): Observable<Sport> {
+    return unwrap(this.http.patch<ApiEnvelope<Sport>>(`${this.base}/${id}`, payload));
   }
 
-
-  // =========================================================
-  // STATISTICS
-  // =========================================================
-
-  getGoverningBodiesTotal(): Observable<OrganizationListResponse> {
-
-    const params = new HttpParams()
-      .set('page', 1)
-      .set('limit', 1);
-
-    return this.http.get<OrganizationListResponse>(
-      `${this.organizationsEndpoint}/governing-bodies`,
-      { params }
-    );
+  remove(id: string): Observable<void> {
+    return unwrap(this.http.delete<ApiEnvelope<void>>(`${this.base}/${id}`));
   }
 
-
-  getOrganizationsTotal(): Observable<OrganizationListResponse> {
-
-    const params = new HttpParams()
-      .set('page', 1)
-      .set('limit', 1);
-
-    return this.http.get<OrganizationListResponse>(
-      `${this.organizationsEndpoint}/organizations`,
-      { params }
-    );
-  }
-
-
-  getPlayersTotal(): Observable<OrganizationListResponse> {
-
-    const params = new HttpParams()
-      .set('page', 1)
-      .set('limit', 1);
-
-    return this.http.get<OrganizationListResponse>(
-      `${this.organizationsEndpoint}/players`,
-      { params }
-    );
+  /** Cheap way to read `meta.total` without pulling the full collection. */
+  total(query: ListQuery = {}): Observable<PagedResult<Sport>> {
+    return this.list({ ...query, limit: 1 });
   }
 }

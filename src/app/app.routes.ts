@@ -1,94 +1,21 @@
 import { Routes } from '@angular/router';
-
 import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
-
-  {
-    path: '',
-    pathMatch: 'full',
-    redirectTo: 'dashboard'
-  },
-
-  {
-    path: 'login',
-    loadComponent: () =>
-      import('./features/auth/pages/login/login.component')
-        .then(m => m.LoginComponent)
-  },
-
+  { path: 'login', loadComponent: () => import('./features/auth/login/login.component').then(m => m.LoginComponent) },
   {
     path: '',
     canActivate: [authGuard],
-
-    loadComponent: () =>
-      import('./layout/shell/shell.component')
-        .then(m => m.ShellComponent),
-
+    loadComponent: () => import('./layout/shell/shell.component').then(m => m.ShellComponent),
     children: [
-
-      {
-        path: 'dashboard',
-        loadComponent: () =>
-          import(
-            './features/dashboard/pages/dashboard/dashboard.component'
-          ).then(m => m.DashboardComponent)
-      },
-
-      {
-        path: 'sports',
-        loadComponent: () =>
-          import(
-            './features/sports/pages/sports-list/sports-list.component'
-          ).then(m => m.SportsListComponent)
-      },
-
-      {
-        path: 'teams',
-        loadComponent: () =>
-          import(
-            './features/teams/pages/teams/teams.component'
-          ).then(m => m.TeamsComponent)
-      },
-
-      {
-        path: 'matches',
-        loadComponent: () =>
-          import(
-            './features/matches/pages/matches/matches.component'
-          ).then(m => m.MatchesComponent)
-      },
-
-      {
-        path: 'publishing',
-        loadComponent: () =>
-          import(
-            './features/publishing/pages/publishing/publishing.component'
-          ).then(m => m.PublishingComponent)
-      },
-
-      {
-        path: 'finance',
-        loadComponent: () =>
-          import(
-            './features/finance/pages/finance/finance.component'
-          ).then(m => m.FinanceComponent)
-      },
-
-      {
-        path: 'system',
-        loadComponent: () =>
-          import(
-            './features/system/pages/system/system.component'
-          ).then(m => m.SystemComponent)
-      }
-
+      { path: '', redirectTo: 'sports', pathMatch: 'full' },
+      { path: 'sports', loadComponent: () => import('./features/sports/sports-list/sports-list.component').then(m => m.SportsListComponent) },
+      { path: 'sports/:sportId', loadComponent: () => import('./features/sports/sport-detail/sport-detail.component').then(m => m.SportDetailComponent) },
+      { path: 'sports/:sportId/bodies/:bodyId', loadComponent: () => import('./features/sports/governing-body-detail/governing-body-detail.component').then(m => m.GoverningBodyDetailComponent) },
+      { path: 'sports/:sportId/bodies/:bodyId/orgs/:orgId', loadComponent: () => import('./features/sports/organisation-detail/organisation-detail.component').then(m => m.OrganisationDetailComponent) },
+      { path: 'sports/:sportId/bodies/:bodyId/orgs/:orgId/teams/:teamId', loadComponent: () => import('./features/sports/team-detail/team-detail.component').then(m => m.TeamDetailComponent) },
+      { path: 'bulk-import', loadComponent: () => import('./features/sports/bulk-import/bulk-import.component').then(m => m.BulkImportComponent) },
     ]
   },
-
-  {
-    path: '**',
-    redirectTo: 'dashboard'
-  }
-
+  { path: '**', redirectTo: '' }
 ];

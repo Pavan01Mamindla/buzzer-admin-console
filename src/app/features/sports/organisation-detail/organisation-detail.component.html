@@ -1,0 +1,208 @@
+<div class="page">
+  <app-breadcrumbs [crumbs]="crumbs" />
+
+  <div class="detail-header card" *ngIf="organisation() as o">
+    <div class="detail-header__left">
+      <div class="detail-avatar">
+        <img *ngIf="o.crestUrl || o.iconUrl" [src]="o.crestUrl || o.iconUrl" [alt]="o.name" />
+        <span *ngIf="!o.crestUrl && !o.iconUrl">{{ o.name.charAt(0) }}</span>
+      </div>
+      <div>
+        <div class="detail-header__title">
+          {{ o.name }}
+          <app-icon *ngIf="o.verified" name="check" [size]="16" class="verified-tick" />
+        </div>
+        <div class="detail-header__meta">
+          <span *ngIf="o.createdAt">Created: {{ o.createdAt | date: 'MMM d, y, \'at\' h:mm' }}</span>
+          <span *ngIf="o.updatedAt">Updated: {{ o.updatedAt | date: 'MMM d, y, \'at\' h:mm' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stat-row">
+    <app-stat-card label="Teams" [value]="teamsTotal()" [loading]="loading() && activeTab() === 'teams'" />
+    <app-stat-card label="Squad" [value]="squad().length" [loading]="loading() && activeTab() === 'squad'" />
+    <app-stat-card
+      label="Staff"
+      [value]="staffGroupNames.length ? membersOf(staffGroupNames[0]).length : 0"
+      [loading]="loading() && activeTab() === 'staff'"
+    />
+  </div>
+
+  <div class="tabs-row">
+    <button class="tab-chip" [class.active]="activeTab() === 'teams'" type="button" (click)="setTab('teams')">Teams</button>
+    <button class="tab-chip" [class.active]="activeTab() === 'squad'" type="button" (click)="setTab('squad')">Squad</button>
+    <button class="tab-chip" [class.active]="activeTab() === 'staff'" type="button" (click)="setTab('staff')">Staff</button>
+  </div>
+
+  <div class="table-card card">
+    <div class="table-card__head">
+      <span class="table-card__title">
+        {{ activeTab() === 'teams' ? 'Teams' : activeTab() === 'squad' ? 'Participants' : 'Staff' }}
+      </span>
+      <button class="btn btn-primary" type="button" (click)="openAddDialog()" *ngIf="canWriteActiveTab()">
+        <app-icon name="plus" [size]="16" />
+        {{ activeTab() === 'teams' ? 'Add Team' : activeTab() === 'squad' ? 'Add Participant' : 'Add Staff' }}
+      </button>
+    </div>
+
+    <p class="banner banner--error" *ngIf="listError()">
+      {{ listError() }}
+      <button class="retry-link" type="button" (click)="setTab(activeTab())">Retry</button>
+    </p>
+
+    <ng-container *ngIf="activeTab() === 'teams' && !listError()">
+      <table class="data-table" *ngIf="teams().length || !loading()">
+        <thead>
+          <tr>
+            <th>Team</th>
+            <th>Participants</th>
+            <th class="actions-col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let team of teams()" (click)="openTeam(team)" class="clickable-row">
+            <td>
+              <div class="entity-cell">
+                <span class="entity-icon">
+                  <img *ngIf="team.crestUrl || team.iconUrl" [src]="team.crestUrl || team.iconUrl" [alt]="team.name" />
+                  <span *ngIf="!team.crestUrl && !team.iconUrl">{{ team.name.charAt(0) }}</span>
+                </span>
+                {{ team.name }}
+              </div>
+            </td>
+            <td>{{ team.participantsCount ?? '—' }}</td>
+            <td class="actions-col">
+              <button
+                class="btn-icon btn-icon-danger"
+                type="button"
+                (click)="askDelete(team.id, team.name, 'teams', $event)"
+                *ngIf="canWriteCatalogue()"
+                aria-label="Delete"
+              >
+                <app-icon name="trash" [size]="15" />
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="empty-state" *ngIf="!loading() && teams().length === 0">
+        No teams yet{{ pageSearch.term() ? ' for "' + pageSearch.term() + '"' : '' }}. Add the first one above.
+      </p>
+      <div class="pagination" *ngIf="teamsTotalPages() > 1">
+        <button class="btn-icon" type="button" (click)="goToTeamsPage(-1)" [disabled]="teamsPage() === 1">
+          <app-icon name="chevronLeft" [size]="14" />
+        </button>
+        <span>Page {{ teamsPage() }} of {{ teamsTotalPages() }}</span>
+        <button class="btn-icon" type="button" (click)="goToTeamsPage(1)" [disabled]="teamsPage() === teamsTotalPages()">
+          <app-icon name="chevronRight" [size]="14" />
+        </button>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="activeTab() === 'squad' && !listError()">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Participant</th>
+            <th>Position</th>
+            <th>Age</th>
+            <th class="actions-col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let member of filteredSquad">
+            <td>
+              <div class="entity-cell">
+                <span class="entity-icon avatar-icon">
+                  <img *ngIf="member.photoUrl" [src]="member.photoUrl" [alt]="member.name" />
+                  <span *ngIf="!member.photoUrl">{{ member.name.charAt(0) }}</span>
+                </span>
+                {{ member.name }}
+              </div>
+            </td>
+            <td>{{ member.position || member.role || '—' }}</td>
+            <td>{{ member.age ?? '—' }}</td>
+            <td class="actions-col">
+              <button
+                class="btn-icon btn-icon-danger"
+                type="button"
+                (click)="askDelete(member.id, member.name, 'squad', $event)"
+                *ngIf="canWriteRoster()"
+                aria-label="Delete"
+              >
+                <app-icon name="trash" [size]="15" />
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="empty-state" *ngIf="!loading() && filteredSquad.length === 0">No squad members yet.</p>
+    </ng-container>
+
+    <ng-container *ngIf="activeTab() === 'staff' && !listError()">
+      <div class="staff-group" *ngFor="let group of staffGroupNames">
+        <h4 class="staff-group__title">{{ group }}</h4>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Role</th>
+              <th class="actions-col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let member of membersOf(group)">
+              <td>
+                <div class="entity-cell">
+                  <span class="entity-icon avatar-icon">
+                    <img *ngIf="member.photoUrl" [src]="member.photoUrl" [alt]="member.name" />
+                    <span *ngIf="!member.photoUrl">{{ member.name.charAt(0) }}</span>
+                  </span>
+                  {{ member.name }}
+                </div>
+              </td>
+              <td>{{ member.role || '—' }}</td>
+              <td class="actions-col">
+                <button
+                  class="btn-icon btn-icon-danger"
+                  type="button"
+                  (click)="askDelete(member.id, member.name, 'staff', $event)"
+                  *ngIf="canWriteRoster()"
+                  aria-label="Delete"
+                >
+                  <app-icon name="trash" [size]="15" />
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="empty-state" *ngIf="!loading() && staffGroupNames.length === 0">No staff yet.</p>
+    </ng-container>
+
+    <p class="loading-state" *ngIf="loading()">Loading…</p>
+  </div>
+</div>
+
+<app-entity-form-dialog
+  *ngIf="showAddDialog()"
+  [title]="activeTab() === 'teams' ? 'Add Team' : activeTab() === 'squad' ? 'Add Participant' : 'Add Staff Member'"
+  saveLabel="Save"
+  [fields]="activeTab() === 'teams' ? teamFields : activeTab() === 'squad' ? squadFields : staffFields"
+  [saving]="savingForm()"
+  [errorMessage]="formError()"
+  [fieldErrors]="formFieldErrors()"
+  (save)="saveMember($event)"
+  (close)="closeAddDialog()"
+/>
+
+<app-confirm-dialog
+  *ngIf="deletingMember()"
+  title="Remove entry"
+  [message]="'This will remove \'' + deletingMember()?.name + '\' from this organisation.'"
+  [loading]="deleteLoading()"
+  (confirm)="confirmDelete()"
+  (cancel)="cancelDelete()"
+/>

@@ -1,0 +1,16 @@
+@use '../../../shared/styles/page';
+
+.staff-group {
+  margin-bottom: 22px;
+}
+.staff-group__title {
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin: 0 0 8px;
+}
+.avatar-icon {
+  border-radius: 50%;
+  background: var(--surface-3);
+}
